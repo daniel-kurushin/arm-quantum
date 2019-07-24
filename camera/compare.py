@@ -18,10 +18,12 @@ def σ(x):
 
 def compare(img1, img2):
     D = []
-    for x in range(SIZE)[SIZE//3:-SIZE//3]:
-        for y in range(SIZE)[SIZE//3:-SIZE//3]:
-            a = σ(img1.getpixel((x,y)) / 255)
-            b = σ(img2.getpixel((x,y)) / 255)
+    for x in range(SIZE)[SIZE//4:-SIZE//4]:
+        for y in range(SIZE)[SIZE//4:-SIZE//4]:
+            p1 = img1.getpixel((x,y))
+            p2 = img2.getpixel((x,y))
+            a = σ(p1 / 255)
+            b = σ(p2 / 255)
             D += [(a-b)**2]
 #    print(D)
     return sum(D)**1/2
