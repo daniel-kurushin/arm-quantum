@@ -18,8 +18,8 @@ def σ(x):
 
 def compare(img1, img2):
     D = []
-    for x in range(SIZE):
-        for y in range(SIZE):
+    for x in range(SIZE)[SIZE//3:-SIZE//3]:
+        for y in range(SIZE)[SIZE//3:-SIZE//3]:
             a = σ(img1.getpixel((x,y)) / 255)
             b = σ(img2.getpixel((x,y)) / 255)
             D += [(a-b)**2]
