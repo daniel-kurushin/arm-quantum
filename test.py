@@ -8,7 +8,7 @@ Created on Wed Jul 24 14:22:00 2019
 
 from camera.compare import getthumb, compare, MIN, NotAnImage
 import os
-
+import  pickle 
 
 def scan_dir(_dir):
     for path, dirs, files in os.walk(_dir):
@@ -19,11 +19,17 @@ def scan_dir(_dir):
                 pass
 
 def train():
+    db = {}
     for img_name, img_thumb in scan_dir("data"):
         print (img_name)
+        db.update({img_name: img_thumb})
+        
+    pickle.dump(db, open('db.pkl','wb'))
+    recognize('data/toy/2.jpg')
 
 def recognize(image_name):
-    pass
+    db = pickle.load( open('db.pkl','rb'))
+    print (db)
 
 if __name__ == '__main__':
     import sys
