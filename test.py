@@ -21,15 +21,20 @@ def scan_dir(_dir):
 def train():
     db = {}
     for img_name, img_thumb in scan_dir("data"):
-        print (img_name)
         db.update({img_name: img_thumb})
         
     pickle.dump(db, open('db.pkl','wb'))
-    recognize('data/toy/2.jpg')
+    print(recognize('test/cube0.jpg')[0])
 
 def recognize(image_name):
     db = pickle.load( open('db.pkl','rb'))
-    print (db)
+    v2 = getthumb(image_name)
+    rez = []
+    for k, v1 in db.items():
+        x = compare(v1, v2)
+        if x < 0.06:
+            rez += [(k.split('/')[1],x)]
+    return sorted(rez, key = lambda x: x[1])
 
 if __name__ == '__main__':
     import sys
