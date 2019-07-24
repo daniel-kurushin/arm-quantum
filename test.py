@@ -6,10 +6,21 @@ Created on Wed Jul 24 14:22:00 2019
 @author: dan
 """
 
-from camera.compare import getthumb, compare
+from camera.compare import getthumb, compare, MIN, NotAnImage
+import os
+
+
+def scan_dir(_dir):
+    for path, dirs, files in os.walk(_dir):
+        for f in [ "%s/%s" % (path, f) for f in files]:
+            try:
+                yield (f, getthumb(f))
+            except NotAnImage:
+                pass
 
 def train():
-    pass
+    for img_name, img_thumb in scan_dir("data"):
+        print (img_name)
 
 def recognize(image_name):
     pass
@@ -23,3 +34,4 @@ if __name__ == '__main__':
             recognize(sys.argv[2])
     except IndexError:
         print('usage: %s [-t]|[-r image]' % sys.argv[0])
+        

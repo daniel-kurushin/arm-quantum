@@ -30,7 +30,7 @@ def getthumb(filename):
     try:
         return ImageOps.grayscale(Image.open(filename).resize(size = (SIZE,SIZE), resample = Image.HAMMING))
     except OSError:
-         raise NotAnImage()
+        raise NotAnImage()
 
 if __name__ == '__main__':
     try:
