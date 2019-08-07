@@ -14,11 +14,10 @@ void setup() {
 
 void loop() {
   if (Serial.available() > 0) {
-    if Serial.available()
     byte command = Serial.read();
     if (command == COMMAND_ROTATE) {
       byte deg = Serial.read();
-      servo1.write(deg);
+      servo1.write(map(deg, 0, 180, 90, 180));
     }
   }
 }
