@@ -10,6 +10,7 @@ void setup() {
   pinMode(2, OUTPUT);
   digitalWrite(2, 1);
   servo1.attach(SERVO_PIN);
+  servo1.write(90); 
 }
 
 void loop() {
@@ -17,7 +18,8 @@ void loop() {
     byte command = Serial.read();
     if (command == COMMAND_ROTATE) {
       byte deg = Serial.read();
-      servo1.write(map(deg, 0, 180, 90, 180));
+      servo1.write(map(deg, 180, 0, 90, 180 ));
+      
     }
   }
 }
