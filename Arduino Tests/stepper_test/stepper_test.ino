@@ -1,40 +1,59 @@
-
-/*
- Stepper Motor Control - one revolution
-
- This program drives a unipolar or bipolar stepper motor.
- The motor is attached to digital pins 8 - 11 of the Arduino.
-
- The motor should revolve one revolution in one direction, then
- one revolution in the other direction.
-
-
- Created 11 Mar. 2007
- Modified 30 Nov. 2009
- by Tom Igoe
-
- */
-
 #include <Stepper.h>
 
-const int stepsPerRevolution = 200;  // change this to fit the number of steps per revolution
-// for your motor
+const int stepsPerRevolution = 200;
 
-// initialize the stepper library on pins 8 through 11:
+int get_current_position()
+{
+  int arr2[61] = {
+    10,  44,  79, 114, 148, 183, 234, 
+    285, 336, 387, 438, 500, 561, 623, 
+    685, 747, 773, 799, 825, 852, 878, 
+    886, 893, 901, 908, 916, 922, 927, 
+    933, 938, 944, 946, 949, 952, 955, 
+    958, 960, 963, 966, 969, 972, 974, 
+    976, 978, 980, 983, 986, 989, 993, 
+    996,1000,1002,1005,1007,1010,1013,
+    1015,1017,1019,1021,1023
+  };
+
+  int dx, min_dx, min_i;
+
+  int x=analogRead(A0);
+  min_dx = 1023;
+  for (int i = 0; i < 61; i++)
+  {
+    dx = abs(arr2[i] - x);
+    if (dx < min_dx) 
+    {
+      min_dx = dx;
+      min_i = i;
+    }
+  }
+
+  return min_i;
+
+}
+
 Stepper myStepper(stepsPerRevolution, 6, 7, 8, 9);
 
 void setup() 
 {
-  myStepper.setSpeed(150);
-  analogWrite( 5, 255);
-  analogWrite(10, 255);
+  myStepper.setSpeed(100);
+  pinMode( 5, OUTPUT);
+  pinMode(10, OUTPUT);
+  digitalWrite( 5, 1);
+  digitalWrite(10, 1);
+//  analogWrite( 5, 255);
+//  analogWrite(10, 255);
 }
 
 void loop() 
 {
-  myStepper.step(stepsPerRevolution);
-  delay(500);
+  int goal = 30;
 
-  myStepper.step(-stepsPerRevolution);
-  delay(500);
+  int steps = goal - get_current_position();
+
+  myStepper.step(steps * (200 / 8));
+
 }
+
