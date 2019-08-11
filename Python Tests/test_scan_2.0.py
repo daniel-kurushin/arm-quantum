@@ -102,20 +102,26 @@ class Objects() :
                 break
         if compare(r1,r2_2) >= coefficient:
             print('обьект не найден :(')
+            
     def show(self):
         '''вывести найденное изображение на экран'''
-        if compare(self.r1,self.r2_2) <= coefficient:# если изображение найдено
-            cv.imshow('обьект',self.r2_1) # выводим найденное изображение
-            cv.waitKey(0) 
-            cv.destroyAllWindows()
-        elif compare(self.r1,self.r2_2) >= coefficient: # изображение не найдено
-            print('обьект не найден :(') 
+        try:
+            if compare(self.r1,self.r2_2) <= coefficient:# если изображение найдено
+                cv.imshow('обьект',self.r2_1) # выводим найденное изображение
+                cv.waitKey(0) 
+                cv.destroyAllWindows()
+            elif compare(self.r1,self.r2_2) >= coefficient: # изображение не найдено
+                print('обьект не найден :(')
+        except AttributeError:
+            pass 
     def plt_(self):
         '''вывести изображение в plt'''
-        plt.imshow(cv.cvtColor(self.r2, cv.COLOR_BGR2RGB))
+        try:
+            plt.imshow(cv.cvtColor(self.r2, cv.COLOR_BGR2RGB))
+        except AttributeError:
+            pass 
         
-        
-    #команды ардуино       
+    #команды ардуино  
     def ardu_connect(self,com=3,serial=9600):
         '''подключение к ардуино'''
         self.com=com # номер ком порта
@@ -129,23 +135,29 @@ class Objects() :
         print ('Disconnected to arduino')
     def ardu_x (self,command):
         '''отправка угла поворота на ардуино по оси X'''
-        self.command=command # номер команды ардуино
-        X_degree=int((0+self.X_pix)/2/degree_x) # угол поворота камеры по оси X
-        if X_degree >180:
-            X_degree=180
-        print('градусы X =',X_degree) 
-        sleep(1)
-        self.arduino.write(bytes([command,X_degree]))# отправляем на ардуино угол поворота
-        sleep(1)
+        try:
+            self.command=command # номер команды ардуино
+            X_degree=int((0+self.X_pix)/2/degree_x) # угол поворота камеры по оси X
+            if X_degree >180:
+                X_degree=180
+            print('градусы X =',X_degree) 
+            sleep(1)
+            self.arduino.write(bytes([command,X_degree]))# отправляем на ардуино угол поворота
+            sleep(1)
+        except AttributeError:
+            pass        
     def ardu_y (self,command):
         '''отправка угла поворота на ардуино по оси Y'''
-        self.command=command # номер команды ардуино
-        Y_degree=int((0+self.Y_pix)/2/degree_y) # угол поворота камеры по оси Y
-        print('градусы Y =',Y_degree)
-        sleep(1)
-        self.arduino.write(bytes([command,Y_degree]))# отправляем на ардуино угол поворота
-        sleep(1)
-
+        try:
+            self.command=command # номер команды ардуино
+            Y_degree=int((0+self.Y_pix)/2/degree_y) # угол поворота камеры по оси Y
+            print('градусы Y =',Y_degree)
+            sleep(1)
+            self.arduino.write(bytes([command,Y_degree]))# отправляем на ардуино угол поворота
+            sleep(1)
+        except AttributeError:
+            pass 
+    
             
 
 objects=Objects(1,1,x1,y1)
