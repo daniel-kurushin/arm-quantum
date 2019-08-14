@@ -70,7 +70,7 @@ class Objects() :
         self.index=index# количество видов изображения
         self.x1=x1 # ширина окна сканера
         self.y1=y1 # высота окна сканера
-        self.r2=r2
+        self.r2=photo()
         
         # команды по поиску изображения
     def search(self):
@@ -78,7 +78,7 @@ class Objects() :
         for Y1 in range (0,y,step): # цикл по y
             print('конец строки')
             for X1 in range (0,x,step): # цикл по x       
-                r2_1=r2[Y1:Y1+y1,X1:X1+x1] # вырезаем изображение
+                r2_1=self.r2[Y1:Y1+y1,X1:X1+x1] # вырезаем изображение
                 r2_2=cv.resize(r2_1,(C,C)) # обработка
                 for i in range(1,index+1):# сравниваем изображения
                     r1=cv.imread('Photo Test/v2.0/%s.%s.jpg' % ( object_ , i ) )# искомые изображения
@@ -162,23 +162,68 @@ class Objects() :
 
 objects=Objects(1,1,x1,y1)
 objects.ardu_connect()   
-r2=photo()
 objects.search()
 objects.show()
 objects.plt_()
 objects.ardu_x(9)
 objects.ardu_y(9)
 objects.ardu_disconnect() 
-   
+
+
+"""
+
+cube = Cube()
+bottle = Bottle()
+
+manipulator = Manipulator()
+
+for obj in [cube, bottle, ...]:
+    a, b, r = manipulator.find(obj)
+    manipulator.rotate(a)
+    manupulator.move(b, r)
+
+
+
+arduino = Arduino(...)
+
+cube=Cube()
+x, y, z = cube.search()
+cube.x_rotate(x)
+cube.y_rotate(y)
+
+manupulator = Manipulator()
+
+manipulator.find(cube)
 
 
 
 
 
 
+class Object():
+    def __init__(self,a,b,c,d):
+        pass
+        
+class Cube(Object):
+    def __init__(self):
+        super().__init__(1,1,1,1)
 
 
+class Bottle(Object):
+    
+my.py
+from cube import Cube
+from bottle import Bottle
+    
+cube = Cube()
 
+cube.py
+from object import Object
 
+class Cube(Object)
 
+object.py
+impirt *
+
+class Object
 
