@@ -22,27 +22,19 @@ int getPotValue(int Ax)
   return analogRead(Ax)/2;
 }
 
+
+
 bool can_go_left()
 {
-  int num1[5];
-  for ( int i = 0; i < 5; i++)
-  {
-   num1[i] = analogRead(POT);
-   myStepper.step(25);
-  }
-  for ( int i = 0; i<5; i++)
-  {
-    
-  }
-  /*
+  
   int x0 = getPotValue(POT);
-  myStepper.step(50);
+  myStepper.step(-50);
   int x1 = getPotValue(POT);
   Serial.print("<- ");
   Serial.print(x0);
   Serial.print(" ");
   Serial.println(x1);
-  return x0 < x1; */
+  return x0 >= x1; 
 }
 
 bool can_go_right()
@@ -54,31 +46,55 @@ bool can_go_right()
   Serial.print(x0);
   Serial.print(" ");
   Serial.println(x1);
-  return x0 > x1;
+  return x0 <= x1;
 }
 
-//void poisk()
-//{
-//
-//  for (int i = 0; i < 61; i++)
-//  {
-//    num[i] = analogRead(A0);
-//    myStepper.step(-25);
-//  }
-//  Serial.println("=============================");
-//  delay (500);
-//  for (int i = 0; i < 61; i++)
-//  {
-//    Serial.println(num[i]);
-//  }
-//  delay (1000);
-//}
-//
-//void work()
-//{
-//
-//}
-//
+void poisk()
+{
+ for (int i = 0; i < 61; i++)
+  {
+    num[i] = analogRead(A0);
+    myStepper.step(25);
+  }
+  Serial.println("=============================");
+  delay (500);
+  for (int i = 0; i < 61; i++)
+  {
+    Serial.println(num[i]);
+  }
+  delay (1000);
+}
+
+void work()
+{
+  int dx, min_dx, min_i;
+  int a = 0;
+  int c = analogRead(A0);
+  
+  a = Serial.read();
+  
+  min_dx = 1023;
+  for ( int i = 0; i<61; i++)
+  {
+    dx = abs(num[i] - c);
+    if (dx< min_dx) 
+    {
+      min_dx = dx;
+      min_i = i;
+    }
+  }
+  if ( a = min_i)
+  {
+    myStepper.step(-25);
+  }
+  else
+  {
+    myStepper.step(0);
+  }
+  
+}
+
+
 void setup()
 {
   Serial.begin(9600);
@@ -103,12 +119,15 @@ void loop()
       if (not can_go_left()) init_state = POISK;
       break;
     case POISK:
-      if (not can_go_right()) init_state = GO_LEFT;
+      poisk();
+      state = WORK;
+      delay (50000);
       break;
     }
-    //state = WORK;
+    
     break;
   case WORK:
+    ;
     break;
   }
 }
