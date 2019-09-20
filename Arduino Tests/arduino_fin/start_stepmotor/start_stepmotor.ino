@@ -7,10 +7,13 @@
 #define fan2 35 //вентилятор нижний
 #define vacuum 33 //пылесос
 
-Stepper myStepper1(STEPS_PER_REVOLUTION, 44, 42, 40, 38);
-Stepper myStepper2(STEPS_PER_REVOLUTION, 52, 50, 48, 46);
-Stepper myStepper3(STEPS_PER_REVOLUTION, 45, 43, 41, 39);
-Stepper myStepper4(STEPS_PER_REVOLUTION, 53, 51, 49, 47);
+Stepper myStepper1(STEPS_PER_REVOLUTION, 44, 42, 40, 38); // двигатель поворотного основания
+Stepper myStepper2(STEPS_PER_REVOLUTION, 52, 50, 48, 46); // большой двигатель вверх
+Stepper myStepper3(STEPS_PER_REVOLUTION, 45, 43, 41, 39); //двигатель верхний  пред кусь
+Stepper myStepper4(STEPS_PER_REVOLUTION, 53, 51, 49, 47); // двигатель верхний на кусь
+
+int num_motor = 0;
+int num_step = 0;
 
 void set()
 {
@@ -33,6 +36,8 @@ void setup()
   myStepper2.setSpeed(60);
   myStepper3.setSpeed(60);
   myStepper4.setSpeed(60);
+  
+  Serial.begin(9600);
 }
 
 
@@ -40,6 +45,38 @@ void loop()
 {
    set();
    
+   if (Serial.available() > 0)
+   {
+     Serial.println("Введите номер двигателя:");
+     num_motor = Serial.read();
+     Serial.println("Введите кол-во шагов кратных 25:");
+     num_step = Serial.read();
+     //Serial.println("motor is", num_motor, "step is:", num_step);
+   }
+   switch(num_motor)
+   {
+     case 1:
+     myStepper1.step(num_step);
+     delay(500);
+     break;
+     
+     case 2:
+     myStepper2.step(num_step);
+     delay(500);
+     break;
+     
+     case 3:
+     myStepper3.step(num_step);
+     delay(500);
+     break;
+     
+     case 4:
+     myStepper4.step(num_step);
+     delay(500);
+     break;
+     
+   }
+   /*
    myStepper1.step(250);
    delay(500);
    myStepper1.step(-250);
@@ -54,7 +91,7 @@ void loop()
    delay(500);
    myStepper3.step(-250);
    delay(500);
-   /*
+   
    myStepper4.step(250);
    delay(500);
    myStepper4.step(-250);
