@@ -9,7 +9,7 @@
 
 Stepper myStepper1(STEPS_PER_REVOLUTION, 44, 42, 40, 38); // двигатель поворотного основания
 Stepper myStepper2(STEPS_PER_REVOLUTION, 52, 50, 48, 46); // большой двигатель вверх
-Stepper myStepper3(STEPS_PER_REVOLUTION, 45, 43, 41, 39); //двигатель верхний  пред кусь
+Stepper myStepper3(STEPS_PER_REVOLUTION, 45, 43, 41, 39); // двигатель верхний пред кусь
 Stepper myStepper4(STEPS_PER_REVOLUTION, 53, 51, 49, 47); // двигатель верхний на кусь
 
 int num_motor = 0;
@@ -47,9 +47,7 @@ void loop()
    
    if (Serial.available() > 0)
    {
-     Serial.println("Введите номер двигателя:");
      num_motor = Serial.read();
-     Serial.println("Введите кол-во шагов кратных 25:");
      num_step = Serial.read();
      //Serial.println("motor is", num_motor, "step is:", num_step);
    }
@@ -98,7 +96,3 @@ void loop()
    delay(500);
    */
 }
-
-
-
-
