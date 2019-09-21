@@ -1,11 +1,20 @@
 #include <Stepper.h>
+#include <Servo.h>
 
 #define STEPS_PER_REVOLUTION 200
 #define RESOLUTION 61
 
-#define fan1 37 //вентилятор верхний
-#define fan2 35 //вентилятор нижний
-#define vacuum 33 //пылесос
+#define FAN1 37 //вентилятор верхний
+#define LIGHT 35 //подсветка
+#define VACUUM 33 //пылесос
+
+#define s_begin Serial.begin
+#define s_print Serial.print
+#define s_is_av Serial.available
+#define s_read  Serial.read
+#define s_to_int Serial.parseInt
+
+Servo servo; // серво для кусь
 
 Stepper myStepper1(STEPS_PER_REVOLUTION, 44, 42, 40, 38); // двигатель поворотного основания
 Stepper myStepper2(STEPS_PER_REVOLUTION, 52, 50, 48, 46); // большой двигатель вверх
@@ -14,6 +23,22 @@ Stepper myStepper4(STEPS_PER_REVOLUTION, 53, 51, 49, 47); // двигатель 
 
 int num_motor = 0;
 int num_step = 0;
+int t = 0;
+int x = 0;
+
+void s_println(int n_args, ...)
+{
+  va_list ap;
+  va_start(ap, n_args);
+  for (int i = 1; i < n_args; i++)
+  {
+    s_print(va_arg(ap, int));
+    s_print(", ");
+  }
+  s_print(va_arg(ap, int));
+  s_print("\n");
+  va_end(ap);
+}
 
 void set()
 {
@@ -26,8 +51,8 @@ void set()
   analogWrite(8, 255);
   analogWrite(9, 255);
 
-  digitalWrite(fan1,1);
-  digitalWrite(fan2,1);
+  digitalWrite(FAN1,1);
+  digitalWrite(LIGHT,1);
 }
 
 void setup()
@@ -37,62 +62,63 @@ void setup()
   myStepper3.setSpeed(60);
   myStepper4.setSpeed(60);
   
-  Serial.begin(9600);
+  s_begin(9600);
+  servo.attach(10);
 }
-
 
 void loop()
 {
    set();
    
-   if (Serial.available() > 0)
-   {
-     num_motor = Serial.read();
-     num_step = Serial.read();
-     //Serial.println("motor is", num_motor, "step is:", num_step);
-   }
+    if (s_is_av())
+  {
+    x = s_to_int();
+    if (t++ % 2 == 0)
+    {
+      num_motor = x;
+    }
+    else
+    {
+      num_step = x;
+      s_println(3, 666, num_motor, num_step);
+      t = 0;
+    }
+  }
+   
    switch(num_motor)
    {
      case 1:
      myStepper1.step(num_step);
+     num_step = 0;
      delay(500);
      break;
      
      case 2:
      myStepper2.step(num_step);
+     num_step = 0;
      delay(500);
      break;
      
      case 3:
      myStepper3.step(num_step);
+     num_step = 0;
      delay(500);
      break;
      
      case 4:
      myStepper4.step(num_step);
+     num_step = 0;
      delay(500);
      break;
      
-   }
-   /*
-   myStepper1.step(250);
-   delay(500);
-   myStepper1.step(-250);
-   delay(500);
-   
-   myStepper2.step(250);
-   delay(500);
-   myStepper2.step(-250);
-   delay(500);
-   
-   myStepper3.step(250);
-   delay(500);
-   myStepper3.step(-250);
-   delay(500);
-   
-   myStepper4.step(250);
-   delay(500);
-   myStepper4.step(-250);
-   delay(500);
-   */
+     case 5:
+     servo.write(0);
+     delay(2000);
+     servo.write(90);
+     delay(5000);
+     
+     num_step = 0;
+     break;
+   } 
+  
 }
