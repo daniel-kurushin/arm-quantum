@@ -17,8 +17,8 @@ int cs = 0;
 uint32_t t0 = 0;
 int measuring_state = 0;
 
-int mm = 0;
-int i = 0;
+/*int mm = 0;
+int i = 0;*/
 
 void loop()
 {
@@ -65,7 +65,7 @@ void loop()
 
   case 4:
     duration = micros() - dt;
-    measuring = duration*1;
+    measuring = duration*0.17;
     measuring_state = 1;
     state = 0;
     break;
@@ -89,18 +89,18 @@ void loop()
   
     case 1:
       t0 = millis();
-      if (i==0)
+      /*if (i==0)
       {
          Serial.print ("distance ");
          Serial.println (mm);
-      }
+      }*/
       
       Serial.println(measuring);
-      i++;
+      /*i++;
       if(i>9)
       {
         mm = mm + 10;
-      }
+      }*/
       cs = 0;      
       break;
   }
