@@ -31,7 +31,11 @@ def makeMatrix(I, J, fill=0.0):
 
 # our sigmoid function, tanh is a little nicer than the standard 1/(1+e^-x)
 def sigmoid(x):
-    return math.tanh(x)
+    try:
+        return math.tanh(x)
+    except Exception as e:
+        print(x)
+        raise e
 
 # derivative of our sigmoid function, in terms of the output (i.e. y)
 def dsigmoid(y):
@@ -67,7 +71,7 @@ class NN:
 
     def update(self, inputs):
         if len(inputs) != self.ni-1:
-            raise ValueError, 'wrong number of inputs'
+            raise ValueError('wrong number of inputs')
 
         # input activations
         for i in range(self.ni-1):
@@ -94,7 +98,7 @@ class NN:
 
     def backPropagate(self, targets, N, M):
         if len(targets) != self.no:
-            raise ValueError, 'wrong number of target values'
+            raise ValueError('wrong number of target values')
 
         # calculate error terms for output
         output_deltas = [0.0] * self.no
@@ -134,21 +138,23 @@ class NN:
 
     def test(self, patterns):
         for p in patterns:
-            print p[0], '->', [round(x*100) for x in self.update(p[0])]
+            x, y = [ round(x*1000) for x in self.update(p)]
+            r1, r2, r3 = [ round(x*1000) for x in p ]
+            print(x, y, '->', r1, r2, r3)
 
     def weights(self):
-        print 'Input weights:'
+        print('Input weights:')
         for i in range(self.ni):
-            print self.wi[i]
-        print
-        print 'Output weights:'
+            print(self.wi[i])
+        print()
+        print('Output weights:')
         for j in range(self.nh):
-            print self.wo[j]
+            print(self.wo[j])
 
     def train(self, patterns, iterations=10000, N=0.5, M=0.01):
         # N: learning rate
         # M: momentum factor
-        for i in xrange(iterations):
+        for i in range(iterations):
             error = 0.0
             for p in patterns:
                 inputs = p[0]
@@ -156,13 +162,13 @@ class NN:
                 self.update(inputs)
                 error = error + self.backPropagate(targets, N, M)
             if i % 100 == 0:
-                print '%-14f' % error
+                print('%-14f' % error)
 
 
 def demo():
-    from D import d, test, nX, nH, nY
+    from D import D, test, nX, nH, nY
     n = NN(nX, nH, nY)   
-    n.train(d)
+    n.train(D)
     # print n.wi
     # print n.wo
     # print n.ci
@@ -170,3 +176,4 @@ def demo():
 
 if __name__ == '__main__':
     demo()
+    
