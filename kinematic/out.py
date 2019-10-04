@@ -1001,3 +1001,26 @@ RK = {
 	 (682, 327):[60.0, 132.0, 68.0], 
 }
 
+X = []
+Y = []
+R2 = []
+R3 = []
+R4 = []
+
+n = 0
+for x,y in list(RK.keys())[::2]:
+    X += [x]
+    Y += [y]
+    a, b, c = RK[(x,y)]
+    R2 += [int(a)]
+    R3 += [int(b)]
+    R4 += [int(c)]
+    n += 1
+    
+print("int X[] = ", str(X).replace('[','{').replace(']','}'), ';')
+print("int Y[] = ", str(Y).replace('[','{').replace(']','}'), ';')
+print("int R2[] = ", str(R2).replace('[','{').replace(']','}'), ';')
+print("int R3[] = ", str(R3).replace('[','{').replace(']','}'), ';')
+print("int R4[] = ", str(R4).replace('[','{').replace(']','}'), ';')
+print(n)
+
