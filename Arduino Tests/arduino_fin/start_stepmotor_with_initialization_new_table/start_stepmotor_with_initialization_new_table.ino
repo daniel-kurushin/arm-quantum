@@ -122,15 +122,26 @@ void set()
   digitalWrite(VACUUM, 1);
 }
 
-void Stepper1_go(int pos)
-{
-
-  if (pos != r2)
+void Stepper1_go()
+{ 
+  int pot;  
+ pot = 259 - (97* dg)/45;
+  if ( pot > analogRead(A0)
   {
-    myStepper1.step((pos - r2)*k);
+    while (pot < analogRead(A0))
+    {
+      myStepper1.step(-25);
+    }
+  }
+  else 
+  {
+    while(pot > analogRead(A0))
+    {
+      myStepper1.step(25);
+    }
   }
   Stepper1_stop();
-  r1 = pos;
+   
 }
 
 void Stepper2_go(int pos)
@@ -196,12 +207,15 @@ void setup()
   myStepper4.setSpeed(60);
 
   s_begin(9600);
+  
   servo.attach(10);
+
+  set();
 }
 
 void loop()
 {
-  set();
+  
 
   switch (state)
   {
@@ -214,21 +228,25 @@ void loop()
       if (s_is_av())
       {
         a = s_to_int();
-        if (t++ % 2 == 0)
+        if (t++ % 3 == 0)
         {
           x = a;
         }
+        else if
+        {
+          y =a;
+        }
         else
         {
-          y = a;
+          gd = a;
           s_println(3, 666, x, y);
           reverse(x, y);
-          s_println(5,minx, miny, minr2, minr3, minr4);
-          //Stepper3_go(355);
+          s_println(5,minx, miny, minr2, minr3, minr4);          
           Stepper2_go(minr2);
           Stepper3_go(minr3);
           Stepper4_go(minr4);
-          t = 0;
+          Stepper1_go();
+          //t = 0;
         }
       }
 
