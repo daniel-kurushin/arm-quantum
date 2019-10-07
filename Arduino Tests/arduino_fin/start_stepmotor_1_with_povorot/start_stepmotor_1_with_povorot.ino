@@ -42,48 +42,69 @@ void s_println(int n_args, ...)
 }
 
 
+int dg, pot, fff;
+int V, dx1, dx2, dx, x, x0, x1;
+const int DX = 30;
 void setup()
 {
-  
+
+  fff = 0;
   Serial.begin(9600);
+  myStepper1.setSpeed(200);
   set();
+}
+
+int x_to_pot(int x)
+{
+  return 259 - (97 * x) / 45;
+}
+
+int pot_to_x(int pot)
+{
+  return (45 * (259 - pot)) / 97;
 }
 
 void loop()
 {
-  int dg, pot;
-  
   if (s_is_av())
   {
-    x = s_to_int();
-    if (t++ % 2 == 0)
+    int a = s_to_int();
+    if (a != 0)
     {
-      num_motor = x;
+      x1 = a;
+      x0 = pot_to_x(analogRead(A0));
+      fff = 1;
+    }
+  }
+  if (fff)
+  {
+    x = pot_to_x(analogRead(A0));
+    dx1 = abs(x - x0);
+    dx2 = abs(x - x1);
+    if (dx1 < DX or dx2 < DX)
+    {
+      dx = min(dx1, dx2);
+      myStepper1.setSpeed(40 + 5 * dx);
     }
     else
     {
-      num_step = x;
-      s_println(2, 666, dg);
-      t = 0;
+      myStepper1.setSpeed(200);
     }
-  }
-  // 90 - 65, 0 - 241,-90 - 435
-  pot = 259 - (97* dg)/45;
-  if ( pot > analogRead(A0)
-  {
-    while (pot < analogRead(A0))
+
+    s_println(6, x, x0, x1, dx1, dx2, dx);
+    if (x1 > x + 2)
     {
-      myStepper1.step(-25);
+      myStepper1.step( 20);
     }
-  }
-  else 
-  {
-    while(pot > analogRead(A0))
+    else if (x1 < x - 2)
     {
-      myStepper1.step(25);
+      myStepper1.step(-20);
+    }
+    else
+    {
+      Stepper1_stop();
+      fff = 0;
+      delay(100);
     }
   }
-  Stepper1_stop();
-  
-  delay (100);
 }
