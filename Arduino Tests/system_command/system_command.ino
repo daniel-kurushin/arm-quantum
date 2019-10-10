@@ -107,6 +107,7 @@ void loop()
       case 2://сжатие
         value = Serial.parseInt();
         myStepper1.step(-value);
+        delay(500);
         break; 
       case 3://стоп
         digitalWrite(45, 0);
@@ -173,7 +174,7 @@ void loop()
         
         break; 
       case 4://удержание
-         
+          
         break; 
       }
       break;
@@ -183,6 +184,3 @@ void loop()
     }
   }
 }
-
-
-

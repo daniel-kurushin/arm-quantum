@@ -1,11 +1,11 @@
-#define trig 12
-#define echo 11
+#define TRIG 12
+#define ECHO 11
 
 void setup()
 {
   Serial.begin(9600);
-  pinMode(trig, OUTPUT);
-  pinMode(echo, INPUT);
+  pinMode(TRIG, OUTPUT);
+  pinMode(ECHO, INPUT);
 }
 
 int state = 0;
@@ -17,8 +17,7 @@ int cs = 0;
 uint32_t t0 = 0;
 int measuring_state = 0;
 
-/*int mm = 0;
-int i = 0;*/
+int mm = 0;
 
 void loop()
 {
@@ -26,7 +25,7 @@ void loop()
   {
   case 0:
     measuring_state = 0;
-    digitalWrite(trig, 0);
+    digitalWrite(TRIG, 0);
     if(micros() - dt > 5)
     {
       state = 1;
@@ -37,7 +36,7 @@ void loop()
     break;
 
   case 1:
-    digitalWrite(trig, 1);
+    digitalWrite(TRIG, 1);
     if(micros() - dt > 10)
     {
       state = 2;
@@ -48,8 +47,8 @@ void loop()
     break;
 
   case 2:
-    digitalWrite(trig, 0);
-    if(digitalRead(echo) == 1)
+    digitalWrite(TRIG, 0);
+    if(digitalRead(ECHO) == 1)
     {
       dt = micros();
       state = 3;
@@ -59,13 +58,13 @@ void loop()
     break;
 
   case 3:
-    if(digitalRead(echo) == 0)
+    if(digitalRead(ECHO) == 0)
       state = 4;
     break;
 
   case 4:
     duration = micros() - dt;
-    measuring = duration*0.17;
+    measuring = duration;
     measuring_state = 1;
     state = 0;
     break;
@@ -76,33 +75,24 @@ void loop()
     break; 
   }
 
-/////////////////////////////////////////
+  /////////////////////////////////////////
 
   switch (cs)
   {
-    case 0:
-      if (millis() - t0 > 500)
-      {
-        cs = 1;
-      }
-      break;
-  
-    case 1:
-      t0 = millis();
-      /*if (i==0)
-      {
-         Serial.print ("distance ");
-         Serial.println (mm);
-      }*/
-      
-      Serial.println(measuring);
-      /*i++;
-      if(i>9)
-      {
-        mm = mm + 10;
-      }*/
-      cs = 0;      
-      break;
+  case 0:
+    if (millis() - t0 > 500)
+    {
+      cs = 1;
+    }
+    break;
+
+  case 1:
+    t0 = millis();
+    Serial.print((int) mm++ / 100);
+    Serial.print("\t");
+    Serial.println(measuring);
+    cs = 0;      
+    break;
   }
 
 }
