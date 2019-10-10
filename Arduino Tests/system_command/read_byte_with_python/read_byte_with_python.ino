@@ -18,16 +18,35 @@ void s_println(int n_args, ...)
   va_end(ap);
 }
 
-void setup() {
-  // put your setup code here, to run once:
+byte a, first_byte, second_byte;
+int rs = 0;
+uint16_t y;
+void setup() 
+{
   Serial.begin(9600);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
+void loop() 
+{
  if (Serial.available() > 0 )
  {
-   byte x = Serial.read();
-   Serial.write(x);
+   a = Serial.read();
+   switch(rs)
+   {
+    case 0:
+    first_byte = a;
+    rs++;
+    break;
+    case 1:
+    sekond_byte = a;
+    rs++;
+    break;
+    case 2:
+    y = first_byte;
+    y = y << 8;
+    y = y | second_byte;
+    break;
+   }
+   Serial.write(y);
  }
 }
