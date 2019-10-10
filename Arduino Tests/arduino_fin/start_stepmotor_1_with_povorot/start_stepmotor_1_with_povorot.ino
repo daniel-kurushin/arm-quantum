@@ -84,7 +84,7 @@ void loop()
     if (dx1 < DX or dx2 < DX)
     {
       dx = min(dx1, dx2);
-      myStepper1.setSpeed(40 + 5 * dx);
+      myStepper1.setSpeed(20 + 6 * dx);
     }
     else
     {
