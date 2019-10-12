@@ -21,6 +21,8 @@
 #define INIT 0
 #define WORK 1
 
+#define CMD_INIT 48
+
 Servo servo; // серво для кусь
 
 Stepper myStepper1(STEPS_PER_REVOLUTION, 44, 42, 40, 38); // двигатель поворотного основания
@@ -85,7 +87,6 @@ void reverse(int x, int y)
   int mind = 10000;
   for (int i = 0; i < 498; i++)
   {
-
     float d = sqrt(pow(X[i] - x, 2) + pow(Y[i] - y, 2));
 
     if (d < mind)
@@ -97,8 +98,6 @@ void reverse(int x, int y)
       minr3 = R3[i];
       minr4 = R4[i];
     }
-
-
   }
 }
 
@@ -166,9 +165,40 @@ int pot_to_x(int pot)
   return (45 * (259 - pot)) / 97;
 }
 
-void Stepper1_go (int z)
+void Stepper1_go (int target_position)
 {
-  int dg, pot, fff;
+  int current_position;
+  while(1)
+  {
+    delta_position = abs(target_position - current_position);
+
+    if(delta_position > 30)
+    {
+      myStepper1.setSpeed(200);
+    }
+    else
+    {
+      myStepper1.setSpeed(20 + 6 * delta_position);
+    }
+
+    current_position = pot_to_x(analogRead(A0));
+    if (target_position > current_position + 2)
+    {
+      myStepper1.step( 20);
+    }
+    else if (target_position < current_position - 2)
+    {
+      myStepper1.step(-20);
+    }
+    else
+    {
+      Stepper1_stop();
+      break;
+    }
+    // s_println(..., target_position, current_position);
+  }
+
+  /*int dg, pot, fff;
   int V, dx1, dx2, dx, x, x0, x1;
   const int DX = 30;
   fff = 0;
@@ -202,7 +232,7 @@ void Stepper1_go (int z)
       Stepper1_stop();
       fff = 0;
     }
-  }
+  }*/
 }
 
 void Stepper2_go(int pos)
@@ -309,7 +339,7 @@ void loop()
               case 49:
                 switch (cmd_n)
                 {
-                  case 48:
+                  case CMD_INIT:
                     initialization();
                     Serial.write('0');
                     break;
