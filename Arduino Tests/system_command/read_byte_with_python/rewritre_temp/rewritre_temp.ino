@@ -1,21 +1,22 @@
 byte b;
 int rs = 0;
-int sys_n, cmd_n;
+int r_sys, r_cmd, e_sys, e_cmd;
 int first_byte_x, second_byte_x, x;
 
 void setup()
 {
   Serial.begin(9600);
-
 }
 
 void log()
 {
-  Serial.println("\nb\trs\tsys_n\tcmd_n\n");
+  Serial.println("\nb\trs\tr_sys\tr_cmd\te_sys\te_cmd\n");
   Serial.print(b);  Serial.print("\t");
   Serial.print(rs);  Serial.print("\t");
-  Serial.print(sys_n);  Serial.print("\t");
-  Serial.print(cmd_n);  Serial.print("\t");
+  Serial.print(r_sys);  Serial.print("\t");
+  Serial.print(r_cmd);  Serial.print("\t");
+  Serial.print(e_sys);  Serial.print("\t");
+  Serial.print(e_cmd);  Serial.print("\t");
 
   Serial.print("\n");
 }
@@ -25,7 +26,7 @@ void loop()
 
   if (Serial.available() > 0)
   {
-    b = Serial.read(); 
+    b = Serial.read();
        
     switch (rs)
     {
@@ -42,21 +43,24 @@ void loop()
         }
         break;
       case 2:
-        sys_n = b;
+        r_sys = b;
         rs++;
         break;   
       case 3:
-        cmd_n = b;
+        r_cmd = b;
         rs++;
         break;
       case 4:
-        switch (sys_n)
+        switch (r_sys)
         {
           case 49://engines system
-            switch (cmd_n)
+            switch (r_cmd)
             {
-              /*case 49://position x, y, z
-                switch (rs)
+              case 49:
+                
+                break;
+              case 50://position x, y, z
+                /*switch (rs)
                 {
                   case 5:
                     first_byte_x = b;
@@ -110,10 +114,9 @@ void loop()
           default:
             Serial.println("-+-+-+-\tnumber system  not found\t-+-+-+-");
         }
-//        rs++;//for case 5 and 6
-        rs = 0;
+        rs++;
         break;
-      /*case 5:
+      case 5:
         if (b == 102) rs++;
         else
         {
@@ -123,25 +126,32 @@ void loop()
         break;
       case 6:
         rs = 0;
-        if (b == 102) Serial.println("-+-+-+-\tcommand successful recive\t-+-+-+-");
+        if (b == 102) 
+        {
+          Serial.println("qqq");
+          e_sys = r_sys;
+          e_cmd = r_cmd;
+          Serial.println("-+-+-+-\tcommand successful recive\t-+-+-+-");
+        }
         else  Serial.println("-+-+-+-\tnot second end synchro\t-+-+-+-");
-        break;*/
+        break;
     }
     log();
     
   }
   else
   {
-//    Serial.println("any work");
-//    delay(3000);
-    switch(sys_n)
+
+    //еще нужно деление на выполненную и в процессе
+
+    switch(e_sys)
     {
       case 49:
-        switch(cmd_n)
+        switch(e_cmd)
         {
           case 49:
             Serial.println("inicialization");
-            cmd_n = 0;//not now
+            e_cmd = 0;//not now
             break;
 
           default:
