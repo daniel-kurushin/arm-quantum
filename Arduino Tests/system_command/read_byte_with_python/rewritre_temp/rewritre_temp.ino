@@ -1,7 +1,7 @@
 byte b;
 int rs = 0;
-int r_sys, r_cmd, e_sys, e_cmd;
-int first_byte_x, second_byte_x, x;
+int r_sys = 0, r_cmd = 0, e_sys = 0, e_cmd = 0;
+int f_byte_x, s_byte_x, x;
 
 void setup()
 {
@@ -32,21 +32,76 @@ void loop()
     {
       case 0:
         if (b == 48) rs++;
-        else Serial.println("-+-+-+-\tnot first synchro\t-+-+-+-");
+        else Serial.println("not first synchro");
         break;
       case 1:
         if (b == 48) rs++;
         else
         {
           rs = 0;
-          Serial.println("-+-+-+-\tnot second synchro\t-+-+-+-");
+          Serial.println("not second synchro ");
         }
         break;
       case 2:
-        r_sys = b;
-        rs++;
+        if(r_sys == 0)
+          r_sys = b;
+        else
+        {
+          switch(r_sys)
+          {
+            case 49:
+            {
+              if(r_cmd == 0)
+              {
+                r_cmd = b;
+                switch(r_cmd)//without parametrs
+                {
+                  case 49:
+                  {
+                    //inicialization
+                    rs++;
+                    break;
+                  }
+                  case 50:
+                  {
+                    //stop
+                    rs++;
+                    break;
+                  }
+                }     
+              }  
+              else
+              {
+                switch(r_cmd)
+                {
+                  case 51:
+                  {
+                    //coordinates
+                    //f_byte_x = b;
+                    break;
+                  }
+                  default:
+                  {
+                    Serial.println("number command  not found ");
+                    r_sys = 0;
+                    r_cmd = 0;
+                    rs = 0;
+                  }
+                }
+              }
+            }
+            break;
+            default:
+            {
+              Serial.println("number system  not found ");
+              r_sys = 0;
+              r_cmd = 0;
+              rs = 0;
+            }
+          }
+        }
         break;   
-      case 3:
+      /*case 3:
         r_cmd = b;
         rs++;
         break;
@@ -60,7 +115,7 @@ void loop()
                 
                 break;
               case 50://position x, y, z
-                /*switch (rs)
+                switch (rs)
                 {
                   case 5:
                     first_byte_x = b;
@@ -105,39 +160,46 @@ void loop()
 //                    z = z | second_byte_z;
 //                    rs++;
 //                    break;
-                }*/
+                }
               default:
-                Serial.println("-+-+-+-\tnumber command  not found\t-+-+-+-");
+                Serial.println("umber command  not found ");
             }
             break;
             
           default:
-            Serial.println("-+-+-+-\tnumber system  not found\t-+-+-+-");
+            Serial.println("umber system  not found ");
         }
         rs++;
-        break;
-      case 5:
+        break;*/
+      case 3:
         if (b == 102) rs++;
         else
         {
           rs = 0;
-          Serial.println("-+-+-+-\tnot first end synchro\t-+-+-+-");
+          r_sys = 0;
+          r_cmd = 0;
+          Serial.println("ot first end synchro ");
         }
         break;
-      case 6:
+      case 4:
         rs = 0;
         if (b == 102) 
         {
-          Serial.println("qqq");
           e_sys = r_sys;
           e_cmd = r_cmd;
-          Serial.println("-+-+-+-\tcommand successful recive\t-+-+-+-");
+          r_sys = 0;
+          r_cmd = 0;
+          Serial.println("command successful recive ");
         }
-        else  Serial.println("-+-+-+-\tnot second end synchro\t-+-+-+-");
+        else
+        {
+          Serial.println("ot second end synchro ");
+          r_sys = 0;
+          r_cmd = 0;
+        }
         break;
     }
     log();
-    
   }
   else
   {
@@ -153,11 +215,16 @@ void loop()
             Serial.println("inicialization");
             e_cmd = 0;//not now
             break;
+          case 50:
+            Serial.println("stop");
+            e_cmd = 0;//not now
+            break;
 
           default:
             Serial.println("command not selected");
             delay(3000);
         }
+        e_sys = 0;
         break;
         
       default:
