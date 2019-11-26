@@ -1,0 +1,226 @@
+/*Общие настройки*/
+*{
+	margin:0;
+	padding:0;
+}
+header{
+	width:100%;
+	height:100px;
+	background-color: #20b6;	
+}
+body{
+	background-color: #20b6b6;
+}
+
+textarea{
+	resize: none;
+}
+
+/*Стилизация кнопок и полей ввода*/
+#com{
+	float:left;
+	height: 24px; 
+	width:120px;
+	margin-top:9px;
+	margin-left:10px;
+	padding-left: 5px;
+	font-family: 'Patua One'; 
+}
+#connect{
+	float:left;
+	height: 30px;
+	width: 120px;
+	border-radius: 5px;
+	font-family: 'Patua One'; 
+	font-size: 20px;
+	margin-left: 6px;
+	margin-top: 8px;
+}
+#ping{
+	float:left;
+	height: 30px;
+	width: 120px;
+	border-radius: 5px;
+	font-family: 'Patua One'; 
+	font-size: 20px;
+	margin-left: 6px;
+	margin-top: 8px;
+}
+
+/*Шапка и подключение*/
+#name{
+	padding-top:9px;
+	padding-left:15px;
+	color:white;
+	text-align: left;
+	font-family: 'Staatliches';
+	font-size: 70px;
+}
+#connect_bar{
+	background:#f07d14;
+	width:100%;
+	height:45px;
+	float:left;
+}
+#status{
+	position: absolute;
+	left: 84%;
+	margin-top: 7px;
+	background-color: white;
+	border-radius: 1000px;
+	height:30px;
+	width:180px;
+}
+#text_status{
+	text-align: center;
+	color: red;
+	font-family: 'Patua One';
+	font-size: 25px;
+}
+
+/*Скрипты и префабы*/
+#scripts{
+	position:relative;
+	float:left;
+	border: 2px solid;
+	border-radius: 10px;
+	height:500px;
+	width:28%;
+	margin-top:5px;
+	margin-left:12px;
+	border-color: white;
+	background-color: white;
+}
+#custom_command_text{
+	position: relative;
+	float:left;
+	height:20px;
+	width:75%;
+	padding-left:5px;
+	margin-left:6%;
+	margin-top:5px;
+	font-family: 'Patua One'; 
+}
+#custom_command{
+	position:relative;
+	margin-top:5px;
+	margin-left: 2px;
+	float:left;
+	height:24px;
+	width:50px;
+	font-family: 'Patua One'; 
+	border: 0px;
+}
+#log{
+	margin-top:10px;
+	margin-left: 10px;
+	padding-left: 5px; 
+	padding-top: 5px; 
+	padding-right: 5px; 
+	height: 88%;
+	width: 93%;
+}
+
+
+/*Камера*/
+#camera{
+	position: relative;
+	float:left;
+	border: 2px solid;
+	border-radius: 10px;
+	margin-top: 5px;
+	height: 500px;
+	width: 38%;
+	margin-top:5px;
+	margin-left: 8px;
+	border-color: white;
+	background-color: white;
+}
+
+/*Панель управления*/
+#ctrl_panel{
+	position: relative;
+	float:left;
+	border: 2px solid;
+	border-radius: 10px;
+	height: 500px;
+	width: 30%;
+	margin-top: 5px;
+	margin-left: 8px;
+	border-color: white;
+	background-color: white;
+}
+#switch_coords{
+	margin-top: 20px;
+	margin-left: 30%;
+}
+#first{
+	margin-top: 40px;
+}
+.switch_coords{
+	height: 40px;
+	width: 80px;
+	background-color: #f07d14;
+	border: 0px;
+	font-family: 'Patua One';
+	font-size: 30px;
+	color: white;
+}
+.send_bg{
+	width:90%;
+	height: 75px;
+	margin: 5%;
+	border: 0px solid;
+	border-radius: 100px;
+	background-color: #ccccff;
+}
+.step{
+	height: 60px;
+	width: 75px;
+	margin: 5px;
+	font-size: 50px;
+	text-align: center;
+	float:left;
+	font-family: 'Patua One'; 
+}
+.pluss{
+	height: 63px;
+	width: 60px;
+	font-size: 50px;
+	font-family: 'Patua One'; 
+	text-align: center;
+	border-radius: 50px;
+	background-color: #f07d14;
+	color:white;
+	border: 0px solid;
+	float: left;
+	margin: 5px;
+	outline: none;
+}
+.minus{
+	height: 63px;
+	width: 60px;
+	padding-bottom: 10px;
+	font-size: 50px;
+	font-family: 'Patua One'; 
+	text-align: center;
+	float: left;
+	margin: 5px;
+	border-radius: 50px;
+	background-color: #f07d14;
+	color:white;
+	border: 0px solid;
+	outline: none;	
+}
+.coord_name{
+	border-radius: 2px;
+	height: 62px;
+	width: 60px;
+	text-align: center;
+	float: left;
+	margin: 5px;
+	background-color: white;
+	font-size: 50px;
+	margin-left: 15%;
+	font-family: 'Patua One'; 
+}
