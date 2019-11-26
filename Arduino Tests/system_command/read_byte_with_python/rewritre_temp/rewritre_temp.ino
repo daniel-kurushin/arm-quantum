@@ -12,8 +12,10 @@ Stepper myStepper4(STEPS_PER_REVOLUTION, 53, 51, 49, 47); // двигатель 
 
 byte b;
 int rs = 0;
+int rs_coord = 0;
 int r_sys = 0, r_cmd = 0, e_sys = 0, e_cmd = 0;
-int f_byte_x, s_byte_x;
+int f_b_x, s_b_x, f_b_y, s_b_y, f_b_z, s_b_z;
+int x, y, z;
 
 int r1, r2, r3, r4;
 const int k = 25;
@@ -48,13 +50,16 @@ void setup()
 
 void log()
 {
-  Serial.println("b\trs\tr_sys\tr_cmd\te_sys\te_cmd\n");
+  Serial.println("b\trs\tr_sys\tr_cmd\te_sys\te_cmd\tf_b_x\ts_b_x\tx\n");
   Serial.print(b);  Serial.print("\t");
   Serial.print(rs);  Serial.print("\t");
   Serial.print(r_sys);  Serial.print("\t");
   Serial.print(r_cmd);  Serial.print("\t");
   Serial.print(e_sys);  Serial.print("\t");
   Serial.print(e_cmd);  Serial.print("\t");
+  Serial.print(f_b_x);  Serial.print("\t");
+  Serial.print(s_b_x);  Serial.print("\t");
+  Serial.print(x);  Serial.print("\t");
 
   Serial.println("");
 }
@@ -65,13 +70,13 @@ void initialization()
   {
     case 2:
       {
-//        myStepper2.step(-10);
-//        if (steps++ > 150)
-//        {
-//          motor = 3;
-//          steps = 0;
-//        }
-        motor = 3;
+        myStepper2.step(-10);
+        if (steps++ > 150)
+        {
+          motor = 3;
+          steps = 0;
+        }
+//        motor = 3;
         break;
       }
     case 3:
@@ -82,6 +87,7 @@ void initialization()
           motor = 4;
           steps = 0;
         }
+//        motor = 4;
         break;
       }
     case 4:
@@ -92,16 +98,20 @@ void initialization()
           motor = 0;
           steps = 0;
         }
+//        motor = 0;
         break;
       }
   }
 
   if (motor == 0)
   {
+    Serial.println("servo");
     stepper2_stop();
     stepper3_stop();
     stepper4_stop();
     servo.write(0);
+    motor = 2;
+    steps = 0;
     e_cmd = 0;
     e_sys = 0;
   }
@@ -182,6 +192,7 @@ void loop()
     switch (rs)
     {
       case 0:
+      {
         if (b == 48)
         {
           rs++;
@@ -192,7 +203,9 @@ void loop()
           Serial.println("not first synchro");
         }
         break;
+      }
       case 1:
+      {
         if (b == 48)
         {
           rs++;
@@ -203,6 +216,7 @@ void loop()
           Serial.println("not second synchro ");
         }
         break;
+      }
       case 2:
         if (r_sys == 0)
           r_sys = b;
@@ -218,17 +232,17 @@ void loop()
                   switch (r_cmd) //without parametrs
                   {
                     case 49:
-                      {
-                        //inicialization
-                        rs++;
-                        break;
-                      }
+                    {
+                      //inicialization
+                      rs++;
+                      break;
+                    }
                     case 50:
-                      {
-                        //stop
-                        rs++;
-                        break;
-                      }
+                    {
+                      //stop
+                      rs++;
+                      break;
+                    }
                   }
                 }
                 else
@@ -238,7 +252,67 @@ void loop()
                     case 51:
                       {
                         //coordinates
-                        //f_byte_x = b;
+                        Serial.println("coordinates");
+                        switch(rs_coord)
+                        {
+                          // X //
+                          case 0:
+                          {
+                            f_b_x = b;
+                            rs_coord++;
+                            break;
+                          }
+                          case 1:
+                          {
+                            s_b_x = b;
+                            x = f_b_x;
+                            x = x << 8;
+                            x = x | s_b_x;
+//                            rs_coord++;
+                            rs_coord = 0;
+                            rs++;
+                            break;
+                          }
+                          // Y //
+//                          case 2:
+//                          {
+//                            f_b_y = b;
+//                            rs_coord++;
+//                            break;
+//                          }
+//                          case 3:
+//                          {
+//                            s_b_y = b;
+//                            y = f_b_y;
+//                            y = y << 8;
+//                            y = y | s_b_y;
+//                            rs_coord++;
+//                            break;
+//                          }
+//                          // Z //
+//                          case 4:
+//                          {
+//                            f_b_z = b;
+//                            rs_coord++;
+//                            break;
+//                          }
+//                          case 5:
+//                          {
+//                            s_b_z = b;
+//                            z = f_b_z;
+//                            z = z << 8;
+//                            z = z | s_b_z;
+//                            rs++;
+//                            
+//                            break;
+//                          }
+                        }
+                        
+//                        if(rs_coord = 5)
+//                          rs_coord = 0;
+//                        else
+//                          Serial.println("not all coordinates");
+//                          
                         break;
                       }
                     default:
@@ -262,19 +336,7 @@ void loop()
           }
         }
         break;
-      /*case 3:
-        r_cmd = b;
-        rs++;
-        break;
-        case 4:
-        switch (r_sys)
-        {
-          case 49://engines system
-            switch (r_cmd)
-            {
-              case 49:
-
-                break;
+/*
               case 50://position x, y, z
                 switch (rs)
                 {
@@ -322,16 +384,7 @@ void loop()
         //                    rs++;
         //                    break;
                 }
-              default:
-                Serial.println("umber command  not found ");
-            }
-            break;
-
-          default:
-            Serial.println("umber system  not found ");
-        }
-        rs++;
-        break;*/
+*/
       case 3:
         if (b == 102) rs++;
         else
@@ -339,7 +392,7 @@ void loop()
           rs = 0;
           r_sys = 0;
           r_cmd = 0;
-          Serial.println("ot first end synchro ");
+          Serial.println("not first end synchro ");
         }
         break;
       case 4:
@@ -354,13 +407,13 @@ void loop()
         }
         else
         {
-          Serial.println("ot second end synchro ");
+          Serial.println("not second end synchro ");
           r_sys = 0;
           r_cmd = 0;
         }
         break;
     }
-//    log();
+    log();
   }
   else
   {
@@ -376,12 +429,14 @@ void loop()
             initialization();
             Serial.print("inicialization step ");
             Serial.print(steps);
-            Serial.println("");
+            Serial.println(""); 
             break;
           case 50:
             stepper2_stop();
             stepper3_stop();
             stepper4_stop();
+            motor = 2;
+            steps = 0;
             e_cmd = 0;
             e_sys = 0;
             Serial.println("stop");
@@ -389,12 +444,12 @@ void loop()
 
           default:
             Serial.println("command not selected");
-        }     
+        }
         break;
 
-      default:
-        Serial.println("system not selected");
-        delay(1000);
+//      default:
+//        Serial.println("system not selected");
+//        delay(1000);
     }
   }
 
