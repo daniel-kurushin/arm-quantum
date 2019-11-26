@@ -1,8 +1,8 @@
 from flask import Flask,request,make_response
 
 app = Flask(__name__)
-com = ''
-command = ''
+com = '/dev/ttyUSB0'
+command = '1'
 
 status = 0
 
@@ -30,10 +30,9 @@ def set_status():
 def get_command():
 	if request.method == 'POST':
 		global command
-		command = request.form('command')
+		command = request.form['command']
 	elif request.method == 'GET':
 		if command != '':
 			return command
-			command = ''
 
 app.run(debug=True)
