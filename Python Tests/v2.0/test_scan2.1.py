@@ -13,7 +13,7 @@ from matplotlib import pyplot as plt
 from PIL import Image
 
 
-Coefficient = 0.11# коэффицент сравнения
+Coefficient = 0.2# коэффицент сравнения
 Step=10# шаг в пикселях
 Compress=16 # сжатие изображения 
 
@@ -106,16 +106,16 @@ class Manipulator():
         except AttributeError:
             print('не удалось показать диаграмму :(', file=stderr)
                  
-    def connect(self,com=7,serial=9600):
+    def connect(self,com='/dev/ttyACM0',serial=9600):
         '''подключение к ардуино'''
         self.com = com # номер ком порта
         self.serial = serial # частота
         try:
-            self.arduino = Serial('COM%s' %self.com, self.serial, timeout=2)
+            self.arduino = Serial(self.com, self.serial, timeout=2) 
             sleep(1)
-            print("Connected to arduino!", file=stderr)
+            print("Connected to arduino! :)", file=stderr)
         except SerialException:
-            print("Error connecting to arduino!", file=stderr)
+            print("Error connecting to arduino! :(", file=stderr)
             
             
     def disconnect(self):
@@ -132,7 +132,7 @@ class Manipulator():
             sleep(1)
             print('движение по X ', file=stderr)
         except AttributeError:
-            print('Arduino:нет изображения', file=stderr)    
+            print('Arduino:X не отправлен', file=stderr)    
             
     def moveY(self,y):
         '''отправка угла поворота на ардуино по оси Y'''
@@ -143,13 +143,13 @@ class Manipulator():
             sleep(1)
             print('движение по Y', file=stderr)
         except AttributeError:
-            print ('Arduino:нет изображения', file=stderr)
+            print ('Arduino:Y не отправлен', file=stderr)
     
 
 if __name__ == '__main__':
     manipulator=Manipulator()
+    x,y = manipulator.search_object('cube')
     manipulator.connect()
-    x,y = manipulator.search_object('bottle')
     manipulator.show_object()
     manipulator.show_diagram_photo()
     manipulator.moveX(x)
