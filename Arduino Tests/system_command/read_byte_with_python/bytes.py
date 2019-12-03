@@ -8,18 +8,15 @@ def prepare_coomand(*args):
 	b = 48;
 	arduino.write(b.to_bytes(length=1, byteorder='big', signed=False))
 	arduino.write(b.to_bytes(length=1, byteorder='big', signed=False))
+	
 	b = args[0] + 48;
 	arduino.write(b.to_bytes(length=1, byteorder='big', signed=False))
 	b = args[1] + 48;
 	arduino.write(b.to_bytes(length=1, byteorder='big', signed=False))
 
 	if len(args)>2:
-		b = args[2];
-		arduino.write(b.to_bytes(length=2, byteorder='big', signed=True))
-		# b = args[3];
-		# arduino.write(b.to_bytes(length=2, byteorder='big', signed=True))
-		# b = args[4];
-		# arduino.write(b.to_bytes(length=2, byteorder='big', signed=True))
+		for b in args[2:]:
+			arduino.write(b.to_bytes(length=2, byteorder='big', signed=True))		
 	
 	b = 102;
 	arduino.write(b.to_bytes(length=1, byteorder='big', signed=False))
@@ -54,12 +51,9 @@ if __name__ == "__main__":
 	# for i in range(25):
 	# 	serial_print()
 
-	prepare_coomand(1,3,-300)
-	for i in range(40):
+	prepare_coomand(1,3,300, 50, -90)#send coordinates
+	for i in range(75):
 		serial_print()
 
-	# prepare_coomand(1,3,300, 400, -90)
-	# for i in range(40):
-	# 	serial_print()
 
 

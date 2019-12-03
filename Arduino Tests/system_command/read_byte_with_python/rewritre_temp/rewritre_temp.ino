@@ -50,17 +50,26 @@ void setup()
 
 void log()
 {
-  Serial.println("b\trs\tr_sys\tr_cmd\te_sys\te_cmd\tf_b_x\ts_b_x\tx\n");
-  Serial.print(b);  Serial.print("\t");
-  Serial.print(rs);  Serial.print("\t");
+  Serial.println("b\trs\tr_sys\tr_cmd\te_sys\te_cmd");
+  Serial.print(b);      Serial.print("\t");
+  Serial.print(rs);     Serial.print("\t");
   Serial.print(r_sys);  Serial.print("\t");
   Serial.print(r_cmd);  Serial.print("\t");
   Serial.print(e_sys);  Serial.print("\t");
   Serial.print(e_cmd);  Serial.print("\t");
+  Serial.println("");
+  
+  Serial.println("f_b_x\ts_b_x\tx\tf_b_y\ts_b_y\ty\tf_b_z\ts_b_z\tz");
   Serial.print(f_b_x);  Serial.print("\t");
   Serial.print(s_b_x);  Serial.print("\t");
-  Serial.print(x);  Serial.print("\t");
-
+  Serial.print(x);      Serial.print("\t");
+  Serial.print(f_b_y);  Serial.print("\t");
+  Serial.print(s_b_y);  Serial.print("\t");
+  Serial.print(y);      Serial.print("\t");
+  Serial.print(f_b_z);  Serial.print("\t");
+  Serial.print(s_b_z);  Serial.print("\t");
+  Serial.print(z);      Serial.print("\t");
+  Serial.println("");
   Serial.println("");
 }
 
@@ -114,6 +123,7 @@ void initialization()
     steps = 0;
     e_cmd = 0;
     e_sys = 0;
+    log();
   }
 }
 
@@ -247,12 +257,11 @@ void loop()
                 }
                 else
                 {
-                  switch (r_cmd)
+                  switch (r_cmd)//with parametrs
                   {
                     case 51:
                       {
                         //coordinates
-                        Serial.println("coordinates");
                         switch(rs_coord)
                         {
                           // X //
@@ -268,51 +277,44 @@ void loop()
                             x = f_b_x;
                             x = x << 8;
                             x = x | s_b_x;
-//                            rs_coord++;
-                            rs_coord = 0;
-                            rs++;
+                            rs_coord++;
                             break;
                           }
                           // Y //
-//                          case 2:
-//                          {
-//                            f_b_y = b;
-//                            rs_coord++;
-//                            break;
-//                          }
-//                          case 3:
-//                          {
-//                            s_b_y = b;
-//                            y = f_b_y;
-//                            y = y << 8;
-//                            y = y | s_b_y;
-//                            rs_coord++;
-//                            break;
-//                          }
-//                          // Z //
-//                          case 4:
-//                          {
-//                            f_b_z = b;
-//                            rs_coord++;
-//                            break;
-//                          }
-//                          case 5:
-//                          {
-//                            s_b_z = b;
-//                            z = f_b_z;
-//                            z = z << 8;
-//                            z = z | s_b_z;
-//                            rs++;
-//                            
-//                            break;
-//                          }
-                        }
+                          case 2:
+                          {
+                            f_b_y = b;
+                            rs_coord++;
+                            break;
+                          }
+                          case 3:
+                          {
+                            s_b_y = b;
+                            y = f_b_y;
+                            y = y << 8;
+                            y = y | s_b_y;
+                            rs_coord++;
+                            break;
+                          }
+                          // Z //
+                          case 4:
+                          {
+                            f_b_z = b;
+                            rs_coord++;
+                            break;
+                          }
+                          case 5:
+                          {
+                            s_b_z = b;
+                            z = f_b_z;
+                            z = z << 8;
+                            z = z | s_b_z;
+                            rs++;
+                            rs_coord = 0;
+                            break;
+                          }
+                        }                        
                         
-//                        if(rs_coord = 5)
-//                          rs_coord = 0;
-//                        else
-//                          Serial.println("not all coordinates");
-//                          
                         break;
                       }
                     default:
@@ -429,9 +431,10 @@ void loop()
             initialization();
             Serial.print("inicialization step ");
             Serial.print(steps);
-            Serial.println(""); 
+            Serial.println("");
             break;
           case 50:
+            stepper1_stop();
             stepper2_stop();
             stepper3_stop();
             stepper4_stop();
@@ -439,15 +442,21 @@ void loop()
             steps = 0;
             e_cmd = 0;
             e_sys = 0;
+            log();
             Serial.println("stop");
             break;
-
+          case 51:
+            Serial.println("Stepper_go");
+            e_cmd = 0;
+            e_sys = 0;
+            log();
+            break;
           default:
             Serial.println("command not selected");
         }
         break;
 
-//      default:
+//      default://inaction
 //        Serial.println("system not selected");
 //        delay(1000);
     }
