@@ -31,7 +31,7 @@ def serial_print():
 		recive = recive.replace(i, '')
 		
 	l = recive.split('\\t')
-	# print(l)
+
 	if len(l) > 1:
 		for i in l:
 			print(i, end = "\t")
@@ -43,16 +43,21 @@ def serial_print():
 if __name__ == "__main__":
 	serial_print()
 	serial_print()
+
 	# prepare_coomand(1,1)#initialization
 	# for i in range(680):
 	# 	serial_print()
+
+	prepare_coomand(1,1)#initialization test
+	for i in range(50):
+		serial_print()
 
 	# prepare_coomand(1,2)#stop
 	# for i in range(25):
 	# 	serial_print()
 
-	prepare_coomand(1,3,300, 50, -90)#send coordinates
-	for i in range(75):
+	prepare_coomand(1,3,400, 0, -90)#send coordinates
+	for i in range(150):
 		serial_print()
 
 
