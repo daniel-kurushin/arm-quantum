@@ -11,12 +11,12 @@ $(function(){
 
 	$("#custom_command").click(function(){
 		var command = $("#custom_command_text").val();
+		$("#custom_command_text").val("");
 		$("#log").append("-- "+command+"\n");
-		$("custom_command_text").val("");
-		if (command != ""){
+		if (command != ''){
 			$.post('http://'+ip+'/command',{'command':command});
-		}
-		
+			command = '';
+		}	
 	})
 
 	$("#xyz_coord").click(function(){
