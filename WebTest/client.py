@@ -30,7 +30,7 @@ def prepeare_command(send_command):
 	b = 102
 	ARM.write(b.to_bytes(length=1, byteorder='big', signed=False))
 	ARM.write(b.to_bytes(length=1, byteorder='big', signed=False))
-	
+
 def serial_print():
 	recive = str(ARM.readline())
 	t = ("b'", "\\r\\n'", "\\n'")
@@ -49,18 +49,16 @@ def serial_print():
 
 def print_com():
 	while True:
-		serial_print()
+		pass
 
 def send_to_arduino():
 	while True:
 		send_command = get_command()
 		try:
 			prepeare_command(send_command)
-			sleep(2)
 			post('http://127.0.0.1:5000/command', data={'command':''})
 		except:
-			print('Error')
-		sleep(1)
+			pass
 		
 
 message = Thread(target=send_to_arduino,daemon=True)
@@ -75,7 +73,7 @@ while connect_flag == False:
 		print('Done')
 		connect_flag = True
 	except:
-		print('Error')
+		pass
 
 	sleep(1)
 
@@ -83,4 +81,4 @@ message.start()
 com_print.start()
 
 while True:
-	sleep(0.001)
+	sleep(0.0001)

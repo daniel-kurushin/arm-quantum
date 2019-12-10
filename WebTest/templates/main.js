@@ -1,10 +1,30 @@
-$(function(){
+$(document).ready(function(){
+
+	console.log("ready");
 
 	var ip = '127.0.0.1:5000';
 	var mode = 1;
+	var com_port = 0;
+
+	var recognition = new webkitSpeechRecognition();
+	recognition.continuous = true;
+
+	$("#recognition").click(function(){
+		recognition.onresult = function(event) { 
+			console.log(event);
+			var res = "";
+			for(var i=0; i<event.results.length; i++){
+				res = res + event.results[i][0].transcript + " ";
+				console.log(event.results[i][0].transcript);
+			}
+			$("#custom_command_text").val(res);
+			recognition.stop();
+		}
+		recognition.start();
+	})
 
 	$("#connect").click(function(){
-		var com_port = $("#com").val();
+		$("#text_status").text("123");
 		$.post('http://'+ip+'/connect',{'com':com_port});
 		$("#log").append("Trying connecting");
 	})

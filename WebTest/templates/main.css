@@ -72,7 +72,8 @@ textarea{
 	width:180px;
 }
 #text_status{
-	text-align: center;
+	text-align: left;
+	margin-left: 5px;
 	color: red;
 	font-family: 'Patua One';
 	font-size: 25px;
@@ -95,13 +96,23 @@ textarea{
 	position: relative;
 	float:left;
 	height:20px;
-	width:75%;
+	width:60%;
 	padding-left:5px;
 	margin-left:6%;
 	margin-top:5px;
 	font-family: 'Patua One'; 
 }
 #custom_command{
+	position:relative;
+	margin-top:5px;
+	margin-left: 2px;
+	float:left;
+	height:24px;
+	width:50px;
+	font-family: 'Patua One'; 
+	border: 0px;
+}
+#recognition{
 	position:relative;
 	margin-top:5px;
 	margin-left: 2px;
