@@ -19,6 +19,7 @@ void loop() {
     if (command == COMMAND_ROTATE) {
       byte deg = Serial.read();
       servo1.write(map(deg, 180, 0, 90, 180 ));
+      Serial.println(deg);
       
     }
   }
