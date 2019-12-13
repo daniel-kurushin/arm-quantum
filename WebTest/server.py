@@ -4,7 +4,6 @@ from flask import Flask,request,make_response
 app = Flask(__name__)
 com = '/dev/ttyUSB0'
 command = ''
-type_command = ''
 
 lib = ['подать', 'возьми', 'брось', 'положи']
 
@@ -13,6 +12,7 @@ def get_com():
 	if request.method == 'POST':
 		global com
 		com = request.form['com']
+		print(com)
 	if request.method == 'GET':
 		print(com)
 		return com

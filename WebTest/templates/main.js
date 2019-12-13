@@ -4,8 +4,7 @@ $(document).ready(function(){
 
 	var ip = '127.0.0.1:5000';
 	var mode = 1;
-	var com_port = 0;
-
+	var com_port = '0'
 	var recognition = new webkitSpeechRecognition();
 	recognition.continuous = true;
 
@@ -24,16 +23,15 @@ $(document).ready(function(){
 	})
 
 	$("#connect").click(function(){
-		$("#text_status").text("123");
+		com_port = $("#com").val();
 		$.post('http://'+ip+'/connect',{'com':com_port});
-		$("#log").append("Trying connecting");
 	})
 
 	$("#custom_command").click(function(){
 		var command = $("#custom_command_text").val();
 		$("#custom_command_text").val("");
-		$("#log").append("-- "+command+"\n");
 		if (command != ''){
+			$("#log").append("-- "+command+"\n");
 			$.post('http://'+ip+'/command',{'command':command});
 			command = '';
 		}	
@@ -51,6 +49,14 @@ $(document).ready(function(){
 		$("#coord_1").text("A");
 		$("#coord_2").text("B");
 		$("#coord_3").text("C");
+	})
+
+	$("#button_default").click(function(){
+		$.post('http://'+ip+'/command',{'command':'default'})
+	})
+
+	$("#stop_button").click(function(){
+		$.post('http://'+ip+'/command',{'command':'stop'});
 	})
 
 })

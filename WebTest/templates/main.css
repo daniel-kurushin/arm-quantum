@@ -2,6 +2,7 @@
 *{
 	margin:0;
 	padding:0;
+	outline: none;
 }
 header{
 	width:100%;
@@ -78,6 +79,16 @@ textarea{
 	font-family: 'Patua One';
 	font-size: 25px;
 }
+#refresh{
+	float:right;
+	margin-right: 16.5%;
+	margin-top: 0.6%;
+	border-radius: 5px;
+	height: 30px;
+	width: 120px;
+	font-family: 'Patua One';
+	font-size: 20px;
+}
 
 /*Скрипты и префабы*/
 #scripts{
@@ -111,6 +122,8 @@ textarea{
 	width:50px;
 	font-family: 'Patua One'; 
 	border: 0px;
+	transition: 0.3s;
+	outline: none;
 }
 #recognition{
 	position:relative;
@@ -121,6 +134,11 @@ textarea{
 	width:50px;
 	font-family: 'Patua One'; 
 	border: 0px;
+	transition: 0.3s;
+	outline: none;
+}
+.custom_button:active{
+	background-color: #404040;
 }
 #log{
 	margin-top:10px;
@@ -134,7 +152,7 @@ textarea{
 
 
 /*Камера*/
-#camera{
+#free_space{
 	position: relative;
 	float:left;
 	border: 2px solid;
@@ -146,6 +164,30 @@ textarea{
 	margin-left: 8px;
 	border-color: white;
 	background-color: white;
+}
+#stop_button{
+	height: 90%;
+	width: 90%;
+	margin-left: 3%;
+	background-color: red;
+	border-radius: 50%;
+	margin-top: 3%;
+	border: 10px solid #c91e00;
+	transition: 0.4s;
+}
+#stop_button:hover{
+	background-color: #c91e00;
+}
+#stop_button:active{
+	background-color: red;	
+}
+#stop{
+	text-align: center;
+	font-size: 130px;
+	font-family: 'Patua One'; 
+	position: relative;;
+	top: 30%;
+	color: white;
 }
 
 /*Панель управления*/
@@ -167,6 +209,17 @@ textarea{
 }
 #first{
 	margin-top: 40px;
+}
+#button_default{
+	margin-top: 2%;
+	margin-left: 22%;
+	height: 70px;
+	width: 250px;
+	background-color: #f07d14;
+	border: 0px;
+	font-family: 'Patua One';
+	font-size: 45px;
+	color: white;
 }
 .switch_coords{
 	height: 40px;
