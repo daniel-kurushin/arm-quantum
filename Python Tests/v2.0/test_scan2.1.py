@@ -90,7 +90,8 @@ class Manipulator():
                         if self.x_degree >180:
                              self.x_degree=180
                         self.y_degree=int((0+self.Y_pix)/2/(self.y/360)) 
-                        
+                        self.x_degree=int(self.x_degree-90)
+                        self.y_degree=int(self.y_degree-90)
                         break
 #//////////////////////////////////////////////////////////////////////////////                    
                 if compare(self.r1,self.r2_2) <= Coefficient: 
