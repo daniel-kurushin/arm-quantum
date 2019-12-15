@@ -13,7 +13,7 @@ enum ENGlobalState
 
 enum ENInitState 
 {
-    ZAXIS, ARM, HAND
+    PORTS, ZAXIS, STEPPER1, STEPPER2, STEPPER3, INIT_OK
 };
 
 enum ENZRotState 
@@ -33,12 +33,13 @@ const String tm_msgRS[ 8] =
     "ERR"
 };
 
-const String tm_msgGS[10] = {
+const String tm_msgGS[11] = {
     "INIT", 
     "READY", 
     "ROTZ", 
-    "MOVEARM", 
-    "MOVEHAND", 
+    "MOVE0", 
+    "MOVE1", 
+    "MOVE2", 
     "STOP", 
     "XBAT", 
     "UNXBAT", 
@@ -46,15 +47,13 @@ const String tm_msgGS[10] = {
     "ERR"
 };
 
-void imhostep(int dir);
-void do_init();
+ENInitState do_init();
 void telemetry(int RS, int GS, char c, int cmd, int len, int val, int nval, int high, int low);
-ENZRotState z_rotate(int pos);
-float z_measure();
 
-const int Z_MIN = 52
-const int Z_MIDDLE = 257
-const int Z_MAX = 452
+float z_measure();
+void reverse(int x, int y);
+void all_steppers_off();
+int z_stepper_go(float target_pos);
 
 ENReaderState RS = SYNC0;
 ENGlobalState GS = INIT;
