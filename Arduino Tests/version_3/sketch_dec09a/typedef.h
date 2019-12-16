@@ -21,6 +21,11 @@ enum ENZRotState
     Z_IDLE, LESS, GREATER, INPOS, ROTFAIL
 };
 
+enum CMD
+{
+    CMD_NONE, CMD_MOVE_XYZ, CMD_MEASURE, CMD_XBAT, CMD_UNXBAT
+};
+
 const String tm_msgRS[ 8] = 
 {
     "SYNC0", 
@@ -47,6 +52,14 @@ const String tm_msgGS[11] = {
     "ERR"
 };
 
+const String tm_msgCMD[5] = {
+    "CMD_NONE",
+    "CMD_MOVE_XYZ", 
+    "CMD_MEASURE", 
+    "CMD_XBAT", 
+    "CMD_UNXBAT"
+};
+
 ENInitState do_init();
 void telemetry(int RS, int GS, char c, int cmd, int len, int val, int nval, int high, int low);
 
@@ -54,6 +67,8 @@ float z_measure();
 void reverse(int x, int y);
 void all_steppers_off();
 int z_stepper_go(float target_pos);
+int x, y, z, l;
+int xvat;
 
 ENReaderState RS = SYNC0;
 ENGlobalState GS = INIT;

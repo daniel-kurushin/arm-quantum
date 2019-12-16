@@ -185,7 +185,7 @@ ENInitState do_init()
     return state;
 }
 
-void telemetry(int RS, int GS, char c, int cmd, int len, int val, int nval, int high, int low)
+void telemetry(int RS, int GS, char c, int cmd, int len, int val, int nval, int high, int low, int x, int y, int z, int l, int xvat)
 {
   static long t0;
   
@@ -198,7 +198,7 @@ void telemetry(int RS, int GS, char c, int cmd, int len, int val, int nval, int 
   Serial.print("\t");
   Serial.print(c);
   Serial.print("\t");
-  Serial.print(cmd);
+  Serial.print(tm_msgCMD[cmd]);
   Serial.print("\t");
   Serial.print(len);
   Serial.print("\t");
@@ -209,13 +209,23 @@ void telemetry(int RS, int GS, char c, int cmd, int len, int val, int nval, int 
   Serial.print(high);
   Serial.print("\t");
   Serial.print(low);
+  Serial.print("\t");
+  Serial.print(x);
+  Serial.print("\t");
+  Serial.print(y);
+  Serial.print("\t");
+  Serial.print(z);
+  Serial.print("\t");
+  Serial.print(l);
+  Serial.print("\t");
+  Serial.print(xvat);
   Serial.print("\n");
 }
 
 void setup()
 {
   Serial.begin(9600);
-  Serial.println("RS\tc\tcmd\tlen\tval\tnval\thigh\tlow");
+  Serial.println("RS\tGS\tc\tcmd\tlen\tval\tnval\thigh\tlow\tx\ty\tz\tl\txvat");
 }
 
 void loop()
@@ -260,6 +270,7 @@ void loop()
         }
         break;
       case END:
+        values[pos++] = val;
         RS = (c == '0') ? SYNC0 : ERR;
         break;
     }
@@ -270,7 +281,23 @@ void loop()
       if (do_init() == INIT_OK) GS = READY;
       break;
     case READY:
-      GS = ROTZ;
+      switch (cmd)
+      {
+        case CMD_MOVE_XYZ:
+          x = values[0];
+          y = values[1];
+          z = values[2];
+          break;
+        case CMD_MEASURE:
+          break;
+        case CMD_XBAT:
+          xvat = 1;
+          break;
+        case CMD_UNXBAT:
+          xvat = 0;
+          break;
+      }
+      
       break;
     case ROTZ:
       if (z_stepper_go(-20) == 0) GS = MOVE0;
@@ -292,5 +319,5 @@ void loop()
     case FAIL:
       break;
   }
-  telemetry(RS, GS, c, cmd, len, val, nval, high, low);
+  telemetry(RS, GS, c, cmd, len, val, nval, high, low, x, y, z, l, xvat);
 }
