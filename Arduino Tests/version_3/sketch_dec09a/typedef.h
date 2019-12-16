@@ -1,6 +1,9 @@
 #ifndef typedef_h
 #define typedef_h
 
+#define TRIG 12
+#define ECHO 11
+
 enum ENReaderState
 {
     SYNC0, SYNC1, CMD, LEN, VALLOW, VALHIGH, END, ERR
