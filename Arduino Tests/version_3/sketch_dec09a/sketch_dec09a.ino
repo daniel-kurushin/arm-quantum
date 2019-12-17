@@ -218,9 +218,32 @@ void meazure_d()
       cs = 0;
       break;
   }
-
 }
 
+/************************** reverse ***********************/
+
+void reverse(int x, int y)
+{
+  int mind = 10000;
+  int minx, miny;
+  for (int i = 0; i < 498; i++)
+  {
+
+    float d = sqrt(pow(X[i] - x, 2) + pow(Y[i] - y, 2));
+
+    if (d < mind)
+    {
+      mind = d;
+      minx = X[i];
+      miny = Y[i];
+      r1 = R2[i];
+      r2 = R3[i];
+      r3 = R4[i];
+    }
+
+
+  }
+}
 
 ENInitState do_init()
 {
@@ -393,10 +416,22 @@ void loop()
       }
       break;
     case MOVE0:
+      if (stepper1_go(r1) == 0)
+      {
+        GS = MOVE1;
+      }
       break;
     case MOVE1:
+      if (stepper2_go(r2) == 0)
+      {
+        GS = MOVE2;
+      }
       break;
     case MOVE2:
+      if (stepper3_go(r3) == 0)
+      {
+        GS = MEASURE;
+      }
       break;
     case STOP:
       break;
@@ -405,6 +440,7 @@ void loop()
     case UNXBAT:
       break;
     case MEASURE:
+      meazure_d()
       break;
     case FAIL:
       break;

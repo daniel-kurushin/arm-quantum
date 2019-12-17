@@ -67,7 +67,7 @@ ENInitState do_init();
 void telemetry(int RS, int GS, char c, int cmd, int len, int val, int nval, int high, int low);
 
 float z_measure();
-void reverse(int x, int y);
+
 void all_steppers_off();
 int z_stepper_go(float target_pos);
 int x, y, z, l;
@@ -81,6 +81,7 @@ int values[10]; // сюда значения
 int pos = 0;    // индекс
 ENZRotState z_rot_state = Z_IDLE;
 int z_oldpos = 0;
+int r1, r2, r3;
 
 #endif
 
