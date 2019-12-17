@@ -1,8 +1,8 @@
 #ifndef typedef_h
 #define typedef_h
 
-#define TRIG 12
-#define ECHO 11
+#define TRIG 52
+#define ECHO 53
 
 enum ENReaderState
 {
@@ -11,7 +11,7 @@ enum ENReaderState
 
 enum ENGlobalState
 {
-    INIT, READY, ROTZ, MOVE0, MOVE1, MOVE2 , STOP, XBAT, UNXBAT, MEASURE, FAIL
+    INIT, READY, CMD_REC, ROTZ, MOVE0, MOVE1, MOVE2 , STOP, XBAT, UNXBAT, MEASURE, FAIL
 };
 
 enum ENInitState 
@@ -41,9 +41,10 @@ const String tm_msgRS[ 8] =
     "ERR"
 };
 
-const String tm_msgGS[11] = {
+const String tm_msgGS[12] = {
     "INIT", 
     "READY", 
+    "CMD_REC", 
     "ROTZ", 
     "MOVE0", 
     "MOVE1", 
@@ -64,13 +65,14 @@ const String tm_msgCMD[5] = {
 };
 
 ENInitState do_init();
-void telemetry(int RS, int GS, char c, int cmd, int len, int val, int nval, int high, int low);
+void telemetry(int RS, int GS, char c, int cmd, int len, int val, int nval, int high, int low, int x, int y, int z, float l, int xvat);
 
 float z_measure();
 
 void all_steppers_off();
 int z_stepper_go(float target_pos);
-int x, y, z, l;
+int x, y, z;
+float distance;
 int xvat;
 
 ENReaderState RS = SYNC0;

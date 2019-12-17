@@ -141,92 +141,32 @@ int stepper3_go(float target_pos)
 
 /********************** sonic **********************/
 
-
-void meazure_d()
+void meazure_d(int trig, int echo)
 {
-  static int state = 0;
-  static uint32_t dt = 0;
-  static uint32_t duration = 0;
-  static uint32_t measuring = 0;
+  long duration;
 
-  static int cs = 0;
-  static uint32_t t0 = 0;
+  pinMode(trig, 1);
+  digitalWrite(trig, 0);
+  delayMicroseconds(2);
+  digitalWrite(trig, 1);
+  delayMicroseconds(5);
+  digitalWrite(trig, 0);
 
-  switch (state)
-  {
-    case 0:
-      digitalWrite(TRIG, 0);
-      if (micros() - dt > 5)
-      {
-        state = 1;
-        dt = micros();
-      }
-      else
-        dt = micros();
-      break;
+  pinMode(echo, 0);
+  duration = pulseIn(echo, 1);
 
-    case 1:
-      digitalWrite(TRIG, 1);
-      if (micros() - dt > 10)
-      {
-        state = 2;
-        dt = micros();
-      }
-      else
-        dt = micros();
-      break;
+  distance = duration;
 
-    case 2:
-      digitalWrite(TRIG, 0);
-      if (digitalRead(ECHO) == 1)
-      {
-        dt = micros();
-        state = 3;
-      }
-      else if (micros() - dt > 1000000)
-        state = 5;
-      break;
-
-    case 3:
-      if (digitalRead(ECHO) == 0)
-        state = 4;
-      break;
-
-    case 4:
-      duration = micros() - dt;
-      measuring = duration;
-      state = 0;
-      break;
-
-    case 5:
-      state = 0;
-      break;
-  }
-
-  switch (cs)
-  {
-    case 0:
-      if (millis() - t0 > 500)
-      {
-        cs = 1;
-      }
-      break;
-
-    case 1:
-      t0 = millis();
-      l = measuring * 0.2424767 - 115.74481179;
-      cs = 0;
-      break;
-  }
+  delayMicroseconds(5);
 }
+
 
 /************************** reverse ***********************/
 
 void reverse(int x, int y)
 {
   int mind = 10000;
-  int minx, miny;
-  for (int i = 0; i < 498; i++)
+  for (int i = 0; i < 497; i++)
   {
 
     float d = sqrt(pow(X[i] - x, 2) + pow(Y[i] - y, 2));
@@ -234,8 +174,6 @@ void reverse(int x, int y)
     if (d < mind)
     {
       mind = d;
-      minx = X[i];
-      miny = Y[i];
       r1 = R2[i];
       r2 = R3[i];
       r3 = R4[i];
@@ -291,7 +229,7 @@ ENInitState do_init()
   return state;
 }
 
-void telemetry(int RS, int GS, char c, int cmd, int len, int val, int nval, int high, int low, int x, int y, int z, int l, int xvat)
+void telemetry(int RS, int GS, char c, int cmd, int len, int val, int nval, int high, int low, int x, int y, int z, float l, int xvat)
 {
   static long t0;
 
@@ -334,11 +272,12 @@ void setup()
   Serial.println("RS\tGS\tc\tcmd\tlen\tval\tnval\thigh\tlow\tx\ty\tz\tl\txvat");
   pinMode(TRIG, OUTPUT);
   pinMode(ECHO, INPUT);
+  delay(100);
 }
 
 void loop()
 {
-  char c;
+  char c = ' ';
   if (Serial.available())
   {
     c = Serial.read();
@@ -380,6 +319,9 @@ void loop()
       case END:
         values[pos++] = val;
         RS = (c == '0') ? SYNC0 : ERR;
+        if (RS == SYNC0) GS = CMD_REC;
+        break;
+      case ERR:
         break;
     }
   }
@@ -389,6 +331,8 @@ void loop()
       if (do_init() == INIT_OK) GS = READY;
       break;
     case READY:
+      break;
+    case CMD_REC:
       switch (cmd)
       {
         case CMD_MOVE_XYZ:
@@ -406,7 +350,6 @@ void loop()
           xvat = 0;
           break;
       }
-
       break;
     case ROTZ:
       if (z_stepper_go(z) == 0)
@@ -440,10 +383,10 @@ void loop()
     case UNXBAT:
       break;
     case MEASURE:
-      meazure_d()
       break;
     case FAIL:
       break;
   }
-  telemetry(RS, GS, c, cmd, len, val, nval, high, low, x, y, z, l, xvat);
+  meazure_d(53,52);
+  telemetry(RS, GS, c, cmd, len, val, nval, high, low, x, y, z, distance, xvat);
 }
