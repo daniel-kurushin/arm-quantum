@@ -142,78 +142,81 @@ int stepper3_go(float target_pos)
 /********************** sonic **********************/
 
 
-void loop()
+void meazure_d()
 {
-  switch(state)
+  static int state = 0;
+  static uint32_t dt = 0;
+  static uint32_t duration = 0;
+  static uint32_t measuring = 0;
+
+  static int cs = 0;
+  static uint32_t t0 = 0;
+
+  switch (state)
   {
-  case 0:
-    measuring_state = 0;
-    digitalWrite(TRIG, 0);
-    if(micros() - dt > 5)
-    {
-      state = 1;
-      dt = micros();
-    }
-    else
-      dt = micros();        
-    break;
+    case 0:
+      digitalWrite(TRIG, 0);
+      if (micros() - dt > 5)
+      {
+        state = 1;
+        dt = micros();
+      }
+      else
+        dt = micros();
+      break;
 
-  case 1:
-    digitalWrite(TRIG, 1);
-    if(micros() - dt > 10)
-    {
-      state = 2;
-      dt = micros();
-    }
-    else
-      dt = micros();
-    break;
+    case 1:
+      digitalWrite(TRIG, 1);
+      if (micros() - dt > 10)
+      {
+        state = 2;
+        dt = micros();
+      }
+      else
+        dt = micros();
+      break;
 
-  case 2:
-    digitalWrite(TRIG, 0);
-    if(digitalRead(ECHO) == 1)
-    {
-      dt = micros();
-      state = 3;
-    }
-    else if(micros() - dt > 1000000)
-      state = 5;
-    break;
+    case 2:
+      digitalWrite(TRIG, 0);
+      if (digitalRead(ECHO) == 1)
+      {
+        dt = micros();
+        state = 3;
+      }
+      else if (micros() - dt > 1000000)
+        state = 5;
+      break;
 
-  case 3:
-    if(digitalRead(ECHO) == 0)
-      state = 4;
-    break;
+    case 3:
+      if (digitalRead(ECHO) == 0)
+        state = 4;
+      break;
 
-  case 4:
-    duration = micros() - dt;
-    measuring = duration;
-    measuring_state = 1;
-    state = 0;
-    break;
+    case 4:
+      duration = micros() - dt;
+      measuring = duration;
+      state = 0;
+      break;
 
-  case 5:
-    state = 0;      
-    measuring_state = 2;
-    break; 
+    case 5:
+      state = 0;
+      break;
   }
 
   switch (cs)
   {
-  case 0:
-    if (millis() - t0 > 500)
-    {
-      cs = 1;
-    }
-    break;
+    case 0:
+      if (millis() - t0 > 500)
+      {
+        cs = 1;
+      }
+      break;
 
-  case 1:
-    t0 = millis();
-    Serial.print((int) mm++ / 100);
-    Serial.print("\t");
-    Serial.println(measuring);
-    cs = 0;      
-    break;
+    case 1:
+      t0 = millis();
+      l = measuring * 0.2424767 - 115.74481179;
+      cs = 0;
+      break;
   }
 
 }
@@ -221,57 +224,57 @@ void loop()
 
 ENInitState do_init()
 {
-    static ENInitState state = INIT_OK;
-    switch (state)
-    {
-        case PORTS:
-            for (int i = 2; i < 10; i++)
-            {
-                analogWrite(i, 255);
-            }
-            state = ZAXIS;
-            break;
-        case ZAXIS:
-            if (z_stepper_go(0) == 0) state = STEPPER1;
-            break;
-        case STEPPER1:
-            if (stepper1_go(-60) == 0)
-            {
-                meazure_1 = 60;
-                old_pos_1 = 60;
-                state = STEPPER2;
-            }
-            break;
-        case STEPPER2:
-            if (stepper2_go(140) == 0)
-            {
-                meazure_1 = 132;
-                old_pos_1 = 132;
-                state = STEPPER3;
-            }
-            break;
-        case STEPPER3:
-            if (stepper3_go(-70) == 0)
-            {
-                meazure_1 = 68;
-                old_pos_1 = 68;
-                state = INIT_OK;
-            }
-            break;
-        case INIT_OK:
-            all_steppers_off();
-            break;
-    }
-    return state;
+  static ENInitState state = INIT_OK;
+  switch (state)
+  {
+    case PORTS:
+      for (int i = 2; i < 10; i++)
+      {
+        analogWrite(i, 255);
+      }
+      state = ZAXIS;
+      break;
+    case ZAXIS:
+      if (z_stepper_go(0) == 0) state = STEPPER1;
+      break;
+    case STEPPER1:
+      if (stepper1_go(-60) == 0)
+      {
+        meazure_1 = 60;
+        old_pos_1 = 60;
+        state = STEPPER2;
+      }
+      break;
+    case STEPPER2:
+      if (stepper2_go(140) == 0)
+      {
+        meazure_1 = 132;
+        old_pos_1 = 132;
+        state = STEPPER3;
+      }
+      break;
+    case STEPPER3:
+      if (stepper3_go(-70) == 0)
+      {
+        meazure_1 = 68;
+        old_pos_1 = 68;
+        state = INIT_OK;
+      }
+      break;
+    case INIT_OK:
+      all_steppers_off();
+      break;
+  }
+  return state;
 }
 
 void telemetry(int RS, int GS, char c, int cmd, int len, int val, int nval, int high, int low, int x, int y, int z, int l, int xvat)
 {
   static long t0;
-  
+
   if (millis() - t0 < 1000) return;
   t0 = millis();
-  
+
   Serial.print(tm_msgRS[RS]);
   Serial.print("\t");
   Serial.print(tm_msgGS[GS]);
@@ -369,6 +372,7 @@ void loop()
           x = values[0];
           y = values[1];
           z = values[2];
+          GS = ROTZ;
           break;
         case CMD_MEASURE:
           break;
@@ -379,10 +383,14 @@ void loop()
           xvat = 0;
           break;
       }
-      
+
       break;
     case ROTZ:
-      if (z_stepper_go(-20) == 0) GS = MOVE0;
+      if (z_stepper_go(z) == 0)
+      {
+        reverse(x, y);
+        GS = MOVE0;
+      }
       break;
     case MOVE0:
       break;
