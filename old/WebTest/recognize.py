@@ -18,6 +18,8 @@ Coefficient = 0.18# коэффицент сравнения
 Step=10# шаг в пикселях
 Compress=16 # сжатие изображения 
 
+prefabs = ['red cube', 'blue cube']
+
 dictionary = {
     'возьми':'',
     'зелёный':'green ',
@@ -29,13 +31,15 @@ dictionary = {
     'cube':'cube ',
     'blue':'blue ',
     'red':'red ',
-    'green':'green '
+    'green':'green ',
+    'изоленту':'cube ',
+    'синюю':'blue '
 } 
 
 
 # сделать снимок
 def photo():
-    cap = cv.VideoCapture(1)
+    cap = cv.VideoCapture(0)
     for i in range(30):
         cap.read()    
     ret, frame = cap.read()
@@ -52,21 +56,62 @@ def translate(command):
         request += dictionary[command[i]]
     return request
 
-def simple_command(command):
-    if command[0] == 'stop':
-        print("Send to arduino stop")
-    elif command[0] == 'default':
-        print("send coord 0 0 0")
+def prepare_coomand(*args):
+    b = 48;
+    arduino = connect_1()
+    arduino.write(b.to_bytes(length=1, byteorder='big', signed=False))
+    arduino.write(b.to_bytes(length=1, byteorder='big', signed=False))
+    
+    b = args[0] + 48;
+    arduino.write(b.to_bytes(length=1, byteorder='big', signed=False))
+    b = args[1] + 48;
+    arduino.write(b.to_bytes(length=1, byteorder='big', signed=False))
 
-def type_command(command):
+    if len(args)>2:
+        for b in args[2:]:
+            arduino.write(b.to_bytes(length=2, byteorder='big', signed=True))       
+    
+    b = 102;
+    arduino.write(b.to_bytes(length=1, byteorder='big', signed=False))
+    arduino.write(b.to_bytes(length=1, byteorder='big', signed=False))
+    disconnect_1(arduino)
+
+def simple_command(command):
+    if command.lower() == 'stop':
+        prepare_coomand(1,2)
+    elif command.lower() == 'default':
+        print('True')
+        prepare_coomand(1,1)
+
+def type_command(command, manipulator):
     if len(command) == 1:
-        simple_command(command)
+        simple_command(command[0])
     elif len(command) == 3:
-        print(translate(command[1:]))
+        arduino = connect_1()
+        arduino.write(b"1")
+        arduino.write(b"0")
+        disconnect_1(arduino)
+    elif len(command) == 2:
+        #arduino = connect_1()
+        command = get('http://127.0.0.1:5000/coord').text.split()
+        print(command)
+        prepare_coomand(1,3,int(command[0]),int(command[1]),int(command[2]))
+        #onSend(arduino,int(command[0]),int(command[1]),int(command[2]),int(command[3]),int(command[4]))
+        #disconnect_1(arduino)
     else:
         pass
 
     post('http://127.0.0.1:5000/command',{'command':''})
+
+def search(manipulator):
+    default_rotate = []
+    arduino = connect_1()
+    for i in range(10):
+        for i in range(len(prefabs)):
+            x,y = manipulator.search_object(prefabs[i])
+            if (x != 0) or (y != 0):
+                arduino.write()
+
 
 # сравнение        
 def compare(r1, r2_2):
@@ -79,6 +124,29 @@ def compare(r1, r2_2):
                 dif = abs (p1-p2)
                 sum_dif +=dif/255
     return sum_dif /(16*16*3)
+
+def connect_1(com='com10',serial=9600):
+    arduino = Serial(com, serial)
+    sleep(3)
+    return arduino
+
+def disconnect_1(arduino):
+    arduino.close()
+
+def onSend(arduino,n,c,x,y,z):
+    n = n.to_bytes(1, 'little')
+    c = c.to_bytes(1, 'little')
+    x = x.to_bytes(2, 'little', signed=1)
+    y = y.to_bytes(2, 'little', signed=1)
+    z = z.to_bytes(2, 'little', signed=1)
+    
+    send(arduino,n, c, x, y, z)
+
+def send(arduino,n, c, x, y, z):
+    print("1")
+    arduino.write(b"00%s%s%s%s%s0" % (c, n, x, y, z))
+    print("2")
+
 
 
 class Manipulator():
@@ -158,7 +226,7 @@ class Manipulator():
         except AttributeError:
             print('не удалось показать диаграмму :(', file=stderr)
                  
-    def connect(self,com='/dev/ttyACM0',serial=9600):
+    def connect(self,com='com9',serial=9600):
         #подключение к ардуино
         self.com = com # номер ком порта
         self.serial = serial # частота
@@ -166,6 +234,7 @@ class Manipulator():
             self.arduino = Serial(self.com, self.serial, timeout=2) 
             sleep(1)
             print("Connected to arduino! :)", file=stderr)
+            send(3,1,10,20,30)
         except SerialException:
             print("Error connecting to arduino!!! :(", file=stderr)
             
@@ -195,29 +264,24 @@ class Manipulator():
             print('движение по Y', file=stderr)
         except AttributeError:
             print ('Arduino:Y не отправлен', file=stderr)
+    def send(self, n, c, x, y, z):
+        manipulator.arduino.write(b"00%s%s%s%s%s0" % (c, n, x, y, z))
     
     
     
 
 if __name__ == '__main__':
+    manipulator=Manipulator()
     while True:
         try:
-            #manipulator=Manipulator()
             command = get('http://127.0.0.1:5000/command').text.split()
-            type_command(command)
-            print(request)
+            type_command(command,manipulator)
             #x,y = manipulator.search_object(request)
-            sleep(2)
             #manipulator.show_object()
             #manipulator.show_diagram_photo()
-            #manipulator.connect()
             #manipulator.moveX(x)
             #manipulator.moveY(y)
-            #manipulator.disconnect()
+            sleep(1)
         except:
             print("Command not recognized")
             sleep(1)
-    
-      
-   
-    
