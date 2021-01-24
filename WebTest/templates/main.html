@@ -13,60 +13,47 @@
 	<header>
 		<h1 id="name">Arm-quantum</h1>
 		<div id="connect_bar">
-			<form>
-				<input type="text" id="com" placeholder="Com-port">
-			</form>
-			<form float="left">
-				<input id="connect" type="submit" value="Connect">
-			</form>
-			<div id="status">
-				<p id="text_status">Now port: </p>
-			</div>
-			<button id="refresh">Refresh</button>
+			<button id="visual">Start model</button>
 		</div>
 	</header>
-	<div id="scripts">
-		<from>
-			<input id="custom_command_text" type="input" placeholder="Put your command here" value="">
-			<button class = "custom_button" id="custom_command">Send</button>
-			<button class = "custom_button" id="recognition">Speech</button>
-		</from>
-		<textarea readonly id="log"></textarea>
-	</div>
-	<div id="free_space">
-		<div id="stop_button">
-			<p id="stop">STOP!</p>
+	<div id="main">
+		<div id="scripts" class="back">
+			<from>
+				<input id="custom_command_text" type="input" placeholder="Put your command here" value="">
+				<button class = "custom_button" id="custom_command">Send</button>
+				<button class = "custom_button" id="recognition">Speech</button>
+			</from>
+			<textarea readonly id="log"></textarea>
+		</div>
+		<div id="free_space" class="back">
+			<div id="stop_button">
+				<p id="stop">STOP!</p>
+			</div>
+		</div>
+		<div id="ctrl_panel" class="back">
+			<div id="first" class="send_bg">
+				<p id="coord_1" class="coord_name">X</p>
+				<input id="x" class="step" type="number" step="5" min="0" max="90" value="0">
+				<button class="minus">-</button>
+				<button class="plus">+</button>
+			</div>
+			<div class="send_bg">
+				<p id="coord_2" class="coord_name">Y</p>
+				<input id="y" class="step" type="number" step="5" min="0" max="90" value="0">
+				<button class="minus">-</button>
+				<button class="plus">+</button>
+			</div>
+			<div class="send_bg">
+				<p id="coord_3" class="coord_name">Z</p>
+				<input id="z" class="step" type="number" step="5" min="-90" max="90" value="0">
+				<button class="minus">-</button>
+				<button class="plus">+</button>
+			</div>
+			<div>
+				<button id="button_default">To default</button>
+				<button id="send">Send</button>
+			</div>
 		</div>
 	</div>
-	<div id="ctrl_panel">
-		<div id="switch_coords">
-			<button class="switch_coords" id="xyz_coord">A1</button>
-			<button class="switch_coords" id="some_coord">A2</button>
-		</div>
-		<div id="first" class="send_bg">
-			<p id="coord_1" class="coord_name">X</p>
-			<input class="step" type="number" step="5" min="0" max="90" value="0">
-			<button class="minus">-</button>
-			<button class="pluss">+</button>
-		</div>
-		<div class="send_bg">
-			<p id="coord_2" class="coord_name">Y</p>
-			<input class="step" type="number" step="5" min="0" max="90" value="0">
-			<button class="minus">-</button>
-			<button class="pluss">+</button>
-		</div>
-		<div class="send_bg">
-			<p id="coord_3" class="coord_name">Z</p>
-			<input class="step" type="number" step="5" min="0" max="90" value="0">
-			<button class="minus">-</button>
-			<button class="pluss">+</button>
-		</div>
-		<div>
-			<button id="button_default">To default</button>
-		</div>
-	</div>
-	<div id="toastjs"></div>
-	<footer>
-	</footer>
 </body>
 </html>

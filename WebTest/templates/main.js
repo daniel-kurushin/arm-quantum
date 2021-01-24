@@ -1,7 +1,5 @@
 $(document).ready(function(){
 
-	console.log("ready");
-
 	var ip = '127.0.0.1:5000';
 	var mode = 1;
 	var com_port = '0'
@@ -37,18 +35,12 @@ $(document).ready(function(){
 		}	
 	})
 
-	$("#xyz_coord").click(function(){
-		mode = 1;
-		$("#coord_1").text("X");
-		$("#coord_2").text("Y");
-		$("#coord_3").text("Z");
-	})
-
-	$("#some_coord").click(function(){
-		mode = 2;
-		$("#coord_1").text("A");
-		$("#coord_2").text("B");
-		$("#coord_3").text("C");
+	$("#send").click(function(){
+		var x = $("#x").val();
+		var y = $("#y").val();
+		var z = $("#z").val();
+		$.post('http://'+ip+'/coord',{'x':x,'y':y,'z':z});
+		$.post('http://'+ip+'/command',{'command':'1 2'});
 	})
 
 	$("#button_default").click(function(){
@@ -59,4 +51,7 @@ $(document).ready(function(){
 		$.post('http://'+ip+'/command',{'command':'stop'});
 	})
 
+	$("#visual").click(function(){
+		$.post('http://'+ip+'/visual',{'1':'1'});	
+	})
 })
