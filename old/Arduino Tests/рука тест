@@ -1,0 +1,85 @@
+#include <Stepper.h>
+
+#define POT A0
+#define INIT 0
+#define GO_LEFT 1
+#define POISK 2
+
+#define STEPS_PER_REVOLUTION 200
+#define RESOLUTION 61
+
+Stepper myStepper(STEPS_PER_REVOLUTION, 2, 4, 5, 7);
+
+int num[RESOLUTION];
+int state = INIT;
+
+bool can_go_left()
+{
+  int x0 = analogRead(POT)/2;
+  myStepper.step(-25);
+  int x1 = analogRead(POT)/2;
+  Serial.print("<- ");
+  Serial.print(x0);
+  Serial.print(" ");
+  Serial.println(x1);
+  return x0 < x1;
+}
+
+bool can_go_right()
+{
+  int x0 = analogRead(POT)/2;
+  myStepper.step(25);
+  int x1 = analogRead(POT)/2;
+  Serial.print("-> ");
+  Serial.print(x0);
+  Serial.print(" ");
+  Serial.println(x1);
+  return x0 > x1;
+}
+
+//void poisk()
+//{
+//
+//  for (int i = 0; i < 61; i++)
+//  {
+//    num[i] = analogRead(A0);
+//    myStepper.step(-25);
+//  }
+//  Serial.println("=============================");
+//  delay (500);
+//  for (int i = 0; i < 61; i++)
+//  {
+//    Serial.println(num[i]);
+//  }
+//  delay (1000);
+//}
+//
+//void work()
+//{
+//
+//}
+//
+void setup()
+{
+  Serial.begin(9600);
+  myStepper.setSpeed(60);
+  Serial.println("===============================");
+}
+
+void loop()
+{
+  analogWrite(3, 255);
+  analogWrite(6, 255);
+  switch (state)
+  {
+    case INIT:
+      state = GO_LEFT;
+      break;
+    case GO_LEFT:
+      if (not can_go_left()) state = POISK;
+      break;
+    case POISK:
+      if (not can_go_right()) state = INIT;
+      break;
+  }
+}
